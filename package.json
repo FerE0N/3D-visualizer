@@ -1,0 +1,15 @@
+{
+  "name": "blender-web-visualizer",
+  "version": "1.0.0",
+  "description": "Visor web para modelos 3D exportados de Blender",
+  "main": "app.js",
+  "scripts": {
+    "dev": "vite --host",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "vite": "^5.0.0"
+  }
+}

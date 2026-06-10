@@ -1,0 +1,339 @@
+/* ==========================================================================
+   Variables y Sistema de Diseño
+   ========================================================================== */
+:root {
+    /* Paleta de Colores (Dark Mode Premium) */
+    --bg-primary: #0f172a;
+    --bg-secondary: #1e293b;
+    --accent: #3b82f6;
+    --accent-hover: #2563eb;
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    
+    /* Glassmorphism */
+    --glass-bg: rgba(30, 41, 59, 0.7);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --glass-blur: blur(12px);
+    
+    /* Sombras */
+    --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --shadow-glow: 0 0 20px rgba(59, 130, 246, 0.4);
+
+    /* Radios y Espaciado */
+    --radius-lg: 16px;
+    --radius-md: 12px;
+    --radius-sm: 8px;
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ==========================================================================
+   Reset y Base
+   ========================================================================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow-x: hidden;
+    
+    /* Fondo con gradiente dinámico sutil */
+    background: radial-gradient(circle at top right, #1e293b 0%, #0f172a 100%);
+}
+
+.app-container {
+    width: 100%;
+    max-width: 1200px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding: 2rem;
+}
+
+/* ==========================================================================
+   Componentes: Header
+   ========================================================================== */
+.glass-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    text-align: center;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+    color: var(--accent);
+}
+
+.logo h1 {
+    font-size: 1.75rem;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    color: var(--text-primary);
+}
+
+.subtitle {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+}
+
+/* ==========================================================================
+   Componentes: Paneles y Upload Zone
+   ========================================================================== */
+.main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.glass-panel {
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    width: 100%;
+}
+
+.upload-section {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 400px;
+    cursor: pointer;
+    border: 2px dashed var(--glass-border);
+    transition: var(--transition);
+}
+
+.upload-section:hover, .upload-section.dragover {
+    border-color: var(--accent);
+    background: rgba(59, 130, 246, 0.05);
+    box-shadow: var(--shadow-glow);
+}
+
+.upload-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 1rem;
+    pointer-events: none;
+}
+
+.upload-icon {
+    width: 64px;
+    height: 64px;
+    color: var(--accent);
+    margin-bottom: 0.5rem;
+    transition: var(--transition);
+}
+
+.upload-section:hover .upload-icon {
+    transform: translateY(-5px);
+}
+
+.upload-content h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.upload-content p {
+    color: var(--text-secondary);
+}
+
+.highlight {
+    color: var(--accent);
+    font-weight: 600;
+}
+
+.file-hint {
+    font-size: 0.8rem;
+    padding: 0.25rem 0.75rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    margin-top: 0.5rem;
+}
+
+/* ==========================================================================
+   Componentes: Model Viewer
+   ========================================================================== */
+.viewer-section {
+    display: flex;
+    flex-direction: column;
+    height: 70vh;
+    min-height: 500px;
+    overflow: hidden;
+    position: relative;
+    opacity: 1;
+    transition: opacity 0.4s ease-in-out;
+}
+
+.viewer-section.hidden {
+    display: none;
+    opacity: 0;
+}
+
+model-viewer {
+    width: 100%;
+    height: 100%;
+    background-color: var(--bg-primary); /* Fondo sólido detrás del modelo para contraste */
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    outline: none;
+}
+
+.viewer-controls {
+    padding: 1rem;
+    background: var(--bg-secondary);
+    display: flex;
+    justify-content: center;
+    border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+    border-top: 1px solid var(--glass-border);
+}
+
+/* ==========================================================================
+   Botones y Elementos UI
+   ========================================================================== */
+button {
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.95rem;
+    font-weight: 600;
+    transition: var(--transition);
+}
+
+.btn-secondary {
+    padding: 0.75rem 1.5rem;
+    background: transparent;
+    color: var(--text-primary);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-sm);
+}
+
+.btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* Botón AR integrado de model-viewer */
+#ar-button {
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>');
+    background-repeat: no-repeat;
+    background-size: 20px 20px;
+    background-position: 12px center;
+    background-color: var(--accent);
+    color: white;
+    border: none;
+    border-radius: var(--radius-md);
+    padding: 12px 16px 12px 40px;
+    position: absolute;
+    bottom: 16px;
+    right: 16px;
+    box-shadow: var(--shadow-lg);
+}
+
+#ar-button:active {
+    background-color: var(--accent-hover);
+}
+
+#ar-button:focus-visible {
+    outline: 2px solid white;
+}
+
+/* Barra de progreso de carga de modelo */
+.progress-bar {
+    display: block;
+    width: 33%;
+    height: 10%;
+    max-height: 2%;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate3d(-50%, -50%, 0);
+    border-radius: 25px;
+    box-shadow: 0px 3px 10px 3px rgba(0, 0, 0, 0.5), 0px 0px 5px 1px rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.progress-bar.hide {
+    visibility: hidden;
+    transition: visibility 0.3s;
+}
+
+.update-bar {
+    background-color: var(--accent);
+    width: 0%;
+    height: 100%;
+    border-radius: 25px;
+    float: left;
+    transition: width 0.3s;
+}
+
+/* Alertas (Toasts) */
+.toast {
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%) translateY(0);
+    background: #ef4444; /* Rojo para error por defecto */
+    color: white;
+    padding: 1rem 1.5rem;
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-lg);
+    font-weight: 600;
+    z-index: 1000;
+    transition: var(--transition);
+}
+
+.toast.hidden {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateX(-50%) translateY(20px);
+}
+
+/* ==========================================================================
+   Responsive Design
+   ========================================================================== */
+@media (max-width: 768px) {
+    .app-container {
+        padding: 1rem;
+    }
+
+    .glass-header {
+        padding: 1rem;
+        margin-bottom: 1rem;
+    }
+    
+    .logo h1 {
+        font-size: 1.5rem;
+    }
+
+    .upload-section {
+        min-height: 300px;
+    }
+    
+    .viewer-section {
+        height: 60vh;
+        min-height: 400px;
+    }
+}
