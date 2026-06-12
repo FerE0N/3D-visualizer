@@ -13,13 +13,12 @@ export function useVisorController() {
   const [isDragOver, setIsDragOver] = useState(false);
   const [toasts, setToasts] = useState<ToastData[]>([]);
   const [libraryItems, setLibraryItems] = useState<any[]>([]);
-  const [cameraOrbit, setCameraOrbit] = useState<string>('45deg 55deg 105%');
-  const [showGrid, setShowGrid] = useState<boolean>(false);
+  const [currentPerspective, setCurrentPerspective] = useState<string>('iso');
+  const [showGrid, setShowGrid] = useState<boolean>(true);
   const [autoRotate, setAutoRotate] = useState<boolean>(true);
   const [currentTab, setCurrentTab] = useState<AppTab>('viewer');
 
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const modelViewerRef = useRef<any>(null);
 
   // Cargar librería al inicio
   useEffect(() => {
@@ -46,22 +45,8 @@ export function useVisorController() {
 
   // Lógica principal de procesamiento de archivo
   const setPerspective = (persp: Perspective) => {
-    const orbits = {
-      front: '0deg 90deg 105%',
-      top: '0deg 0deg 105%',
-      left: '-90deg 90deg 105%',
-      right: '90deg 90deg 105%',
-      iso: '45deg 55deg 105%'
-    };
-    
-    // Actuamos directamente sobre el componente web si existe
-    if (modelViewerRef.current) {
-      modelViewerRef.current.cameraOrbit = orbits[persp];
-      setShowGrid(true); // Encender malla inteligentemente
-    } else {
-      setCameraOrbit(orbits[persp]); // Fallback
-      setShowGrid(true);
-    }
+    setCurrentPerspective(persp);
+    setShowGrid(true); // Encender malla inteligentemente
   };
 
   const toggleGrid = () => setShowGrid(!showGrid);
@@ -136,12 +121,11 @@ export function useVisorController() {
     isDragOver,
     toasts,
     libraryItems,
-    cameraOrbit,
+    currentPerspective,
     showGrid,
     autoRotate,
     currentTab,
     fileInputRef,
-    modelViewerRef,
 
     // Acciones
     setIsDragOver,

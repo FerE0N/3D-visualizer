@@ -3,6 +3,7 @@
 import React from 'react';
 import { useVisorController } from './controllers/useVisorController';
 import ToastContainer from './components/Toast';
+import ThreeViewer from './components/ThreeViewer';
 
 // Declaración para Web Components en React 18+
 declare module 'react' {
@@ -100,7 +101,7 @@ export default function Home() {
                 </div>
               </div>
             ) : (
-              <div className={`viewer-section ${ctrl.showGrid ? 'viewer-grid' : ''}`}>
+              <div className="viewer-section">
                 
                 {/* PANEL DE HERRAMIENTAS FLOTANTE */}
                 <div className="tools-panel">
@@ -146,23 +147,13 @@ export default function Home() {
                   </button>
                 </div>
 
-                <model-viewer 
-                  ref={ctrl.modelViewerRef}
-                  src={ctrl.modelUrl}
-                  alt="Modelo 3D"
-                  camera-controls 
-                  camera-orbit={ctrl.cameraOrbit}
-                  auto-rotate={ctrl.autoRotate ? "true" : undefined}
-                  onPointerDown={() => ctrl.setShowGrid(false)}
-                  ar 
-                  ar-modes="webxr scene-viewer quick-look"
-                  shadow-intensity="1"
-                  environment-image="neutral"
-                >
-                  <button slot="ar-button" id="ar-button">
-                    Ver en tu espacio (AR)
-                  </button>
-                </model-viewer>
+                <ThreeViewer 
+                  modelUrl={ctrl.modelUrl} 
+                  autoRotate={ctrl.autoRotate} 
+                  showGrid={ctrl.showGrid} 
+                  perspective={ctrl.currentPerspective}
+                  onInteract={() => ctrl.setShowGrid(false)} 
+                />
                 
                 <div className="viewer-controls">
                   <button className="btn-secondary" onClick={ctrl.closeViewer}>Cerrar Visor</button>
