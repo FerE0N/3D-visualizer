@@ -15,6 +15,7 @@ export function useVisorController() {
   const [libraryItems, setLibraryItems] = useState<any[]>([]);
   const [cameraOrbit, setCameraOrbit] = useState<string>('45deg 55deg 105%');
   const [showGrid, setShowGrid] = useState<boolean>(false);
+  const [autoRotate, setAutoRotate] = useState<boolean>(true);
   const [currentTab, setCurrentTab] = useState<AppTab>('viewer');
 
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -56,12 +57,15 @@ export function useVisorController() {
     // Actuamos directamente sobre el componente web si existe
     if (modelViewerRef.current) {
       modelViewerRef.current.cameraOrbit = orbits[persp];
+      setShowGrid(true); // Encender malla inteligentemente
     } else {
       setCameraOrbit(orbits[persp]); // Fallback
+      setShowGrid(true);
     }
   };
 
   const toggleGrid = () => setShowGrid(!showGrid);
+  const toggleAutoRotate = () => setAutoRotate(!autoRotate);
 
   const processFile = async (file: File) => {
     if (!FileModel.isValidExtension(file.name)) {
@@ -134,6 +138,7 @@ export function useVisorController() {
     libraryItems,
     cameraOrbit,
     showGrid,
+    autoRotate,
     currentTab,
     fileInputRef,
     modelViewerRef,
@@ -147,6 +152,8 @@ export function useVisorController() {
     openFromLibrary,
     setCurrentTab,
     setPerspective,
-    toggleGrid
+    toggleGrid,
+    setShowGrid,
+    toggleAutoRotate
   };
 }
