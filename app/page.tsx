@@ -1,8 +1,10 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from 'react';
+import React from 'react';
+import { useVisorController } from './controllers/useVisorController';
+import ToastContainer from './components/Toast';
 
-// Declaración para ignorar el error de TypeScript sobre el tag <model-viewer>
+// Declaración para Web Components en React 18+
 declare module 'react' {
   namespace JSX {
     interface IntrinsicElements {
@@ -12,88 +14,11 @@ declare module 'react' {
 }
 
 export default function Home() {
-  const [modelUrl, setModelUrl] = useState<string | null>(null);
-  const [isUploading, setIsUploading] = useState(false);
-  const [isDragOver, setIsDragOver] = useState(false);
-  const [toastMsg, setToastMsg] = useState<string | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-
-  // Limpiar URL cuando el componente se desmonte
-  useEffect(() => {
-    return () => {
-      if (modelUrl && modelUrl.startsWith('blob:')) {
-        URL.revokeObjectURL(modelUrl);
-      }
-    };
-  }, [modelUrl]);
-
-  const showToast = (msg: string) => {
-    setToastMsg(msg);
-    setTimeout(() => setToastMsg(null), 5000);
-  };
-
-  const processFile = async (file: File) => {
-    const validExtensions = ['.glb', '.gltf', '.blend'];
-    const fileName = file.name.toLowerCase();
-    const isValid = validExtensions.some(ext => fileName.endsWith(ext));
-
-    if (!isValid) {
-      showToast('Formato no soportado. Sube .glb, .gltf o .blend');
-      return;
-    }
-
-    if (fileName.endsWith('.blend')) {
-      // Necesita procesarse en el backend
-      setIsUploading(true);
-      showToast('Enviando .blend al servidor para conversión...');
-      
-      const formData = new FormData();
-      formData.append('file', file);
-
-      try {
-        const response = await fetch('/api/convert', {
-          method: 'POST',
-          body: formData,
-        });
-
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.error || 'Error al convertir en el servidor');
-        }
-
-        const blob = await response.blob();
-        const objectUrl = URL.createObjectURL(blob);
-        setModelUrl(objectUrl);
-        showToast('¡Conversión exitosa!');
-      } catch (err: any) {
-        console.error(err);
-        showToast(`Error: ${err.message}`);
-      } finally {
-        setIsUploading(false);
-      }
-    } else {
-      // Es .glb o .gltf: procesar localmente
-      const objectUrl = URL.createObjectURL(file);
-      setModelUrl(objectUrl);
-    }
-  };
-
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragOver(false);
-    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-      processFile(e.dataTransfer.files[0]);
-    }
-  };
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files.length > 0) {
-      processFile(e.target.files[0]);
-    }
-  };
+  const ctrl = useVisorController();
 
   return (
     <div className="app-container">
+      {/* HEADER */}
       <header className="glass-header">
         <div className="logo">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -106,24 +31,25 @@ export default function Home() {
         <p className="subtitle">Sube archivos .glb, .gltf o <b>.blend</b> directamente</p>
       </header>
 
+      {/* VISTA PRINCIPAL */}
       <main className="main-content">
-        {!modelUrl ? (
+        {!ctrl.modelUrl ? (
           <div 
-            className={`glass-panel upload-section ${isDragOver ? 'dragover' : ''} ${isUploading ? 'opacity-50 pointer-events-none' : ''}`}
-            onDragOver={(e) => { e.preventDefault(); setIsDragOver(true); }}
-            onDragLeave={(e) => { e.preventDefault(); setIsDragOver(false); }}
-            onDrop={handleDrop}
-            onClick={() => fileInputRef.current?.click()}
+            className={`glass-panel upload-section ${ctrl.isDragOver ? 'dragover' : ''} ${ctrl.isUploading ? 'opacity-50 pointer-events-none' : ''}`}
+            onDragOver={(e) => { e.preventDefault(); ctrl.setIsDragOver(true); }}
+            onDragLeave={(e) => { e.preventDefault(); ctrl.setIsDragOver(false); }}
+            onDrop={ctrl.handleDrop}
+            onClick={ctrl.openFileDialog}
           >
             <input 
               type="file" 
-              ref={fileInputRef} 
+              ref={ctrl.fileInputRef} 
               accept=".glb,.gltf,.blend" 
               style={{ display: 'none' }} 
-              onChange={handleFileChange}
+              onChange={ctrl.handleFileChange}
             />
             <div className="upload-content">
-              {isUploading ? (
+              {ctrl.isUploading ? (
                 <>
                   <div style={{width: 64, height: 64, border: '4px solid var(--accent)', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 1s linear infinite', marginBottom: '0.5rem'}} />
                   <h2>Convirtiendo en el servidor...</h2>
@@ -146,7 +72,7 @@ export default function Home() {
         ) : (
           <div className="glass-panel viewer-section">
             <model-viewer 
-              src={modelUrl}
+              src={ctrl.modelUrl}
               alt="Modelo 3D"
               camera-controls 
               auto-rotate
@@ -161,15 +87,14 @@ export default function Home() {
             </model-viewer>
             
             <div className="viewer-controls">
-              <button className="btn-secondary" onClick={() => setModelUrl(null)}>Cerrar Visor</button>
+              <button className="btn-secondary" onClick={ctrl.closeViewer}>Cerrar Visor</button>
             </div>
           </div>
         )}
       </main>
 
-      <div className={`toast ${toastMsg ? '' : 'hidden'}`}>
-        {toastMsg}
-      </div>
+      {/* VISTA DEL SISTEMA DE NOTIFICACIONES */}
+      <ToastContainer toasts={ctrl.toasts} />
 
       <style jsx>{`
         @keyframes spin {

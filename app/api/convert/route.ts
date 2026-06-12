@@ -36,9 +36,9 @@ export async function POST(req: NextRequest) {
     const buffer = Buffer.from(await file.arrayBuffer());
     await writeFile(inputPath, buffer);
 
-    // Ejecutar Blender
-    // Asume que 'blender' está en el PATH del sistema operativo Windows
-    const command = `blender -b "${inputPath}" --python "${scriptPath}" -- "${outputPath}"`;
+    // Ruta absoluta a Blender encontrada en tu sistema
+    const blenderPath = 'C:\\Program Files\\Blender Foundation\\Blender 5.1\\blender.exe';
+    const command = `"${blenderPath}" -b "${inputPath}" --python "${scriptPath}" -- "${outputPath}"`;
 
     await new Promise((resolve, reject) => {
       exec(command, (error, stdout, stderr) => {
