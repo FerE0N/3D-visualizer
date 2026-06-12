@@ -2,5 +2,7 @@
   "/_global-error/page": "/_global-error",
   "/_not-found/page": "/_not-found",
   "/api/convert/route": "/api/convert",
+  "/api/library/route": "/api/library",
+  "/api/upload/route": "/api/upload",
   "/page": "/"
 }

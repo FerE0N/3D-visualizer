@@ -46,6 +46,18 @@
       "regex": "^/api/convert(?:/)?$",
       "routeKeys": {},
       "namedRegex": "^/api/convert(?:/)?$"
+    },
+    {
+      "page": "/api/library",
+      "regex": "^/api/library(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/library(?:/)?$"
+    },
+    {
+      "page": "/api/upload",
+      "regex": "^/api/upload(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/upload(?:/)?$"
     }
   ],
   "dataRoutes": [],

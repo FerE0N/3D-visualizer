@@ -4,8 +4,7 @@ import { writeFile, readFile, unlink, mkdir } from 'fs/promises';
 import { existsSync } from 'fs';
 import path from 'path';
 import os from 'os';
-
-
+import { addToLibrary } from '../lib/db';
 
 export async function POST(req: NextRequest) {
   try {
@@ -27,9 +26,19 @@ export async function POST(req: NextRequest) {
     }
 
     // Nombres únicos
-    const uniqueId = Date.now().toString();
-    const inputPath = path.join(tmpDir, `${uniqueId}_in.blend`);
-    const outputPath = path.join(tmpDir, `${uniqueId}_out.glb`);
+    const timestamp = Date.now();
+    const originalName = file.name;
+    const saveName = `${timestamp}_${originalName.replace(/[^a-z0-9.]/gi, '_').toLowerCase()}`;
+    
+    // El .blend sigue siendo temporal
+    const inputPath = path.join(tmpDir, `${timestamp}_in.blend`);
+    // El .glb se guarda permanentemente en public/models/
+    const publicModelsPath = path.join(process.cwd(), 'public', 'models');
+    if (!existsSync(publicModelsPath)) {
+      await mkdir(publicModelsPath, { recursive: true });
+    }
+    const outputPath = path.join(publicModelsPath, saveName.replace('.blend', '.glb'));
+    const finalUrl = `/models/${saveName.replace('.blend', '.glb')}`;
     const scriptPath = path.join(process.cwd(), 'scripts', 'export_glb.py');
 
     // Escribir archivo .blend al disco
@@ -57,18 +66,19 @@ export async function POST(req: NextRequest) {
       throw new Error('Blender terminó pero el archivo .glb no fue generado.');
     }
 
-    const glbBuffer = await readFile(outputPath);
-
     // Limpieza de archivos temporales (no bloqueante)
-    Promise.all([unlink(inputPath), unlink(outputPath)]).catch(e => console.error('Error limpiando tmp:', e));
+    unlink(inputPath).catch(e => console.error('Error limpiando tmp:', e));
 
-    // Devolver el archivo GLB
-    return new NextResponse(glbBuffer, {
-      headers: {
-        'Content-Type': 'model/gltf-binary',
-        'Content-Disposition': 'inline; filename="converted.glb"',
-      },
+    // Guardar en base de datos local
+    const newItem = await addToLibrary({
+      name: originalName,
+      originalName: originalName,
+      url: finalUrl,
+      type: 'blend-converted'
     });
+
+    // Enviar el nuevo item con su URL para que el frontend lo use directamente
+    return NextResponse.json({ success: true, item: newItem });
 
   } catch (error: any) {
     console.error('Error en el endpoint de conversión:', error);

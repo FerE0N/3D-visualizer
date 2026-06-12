@@ -1,6 +1,10 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { FileModel } from '../models/FileModel';
+import { LibraryModel } from '../models/LibraryModel';
 import { ToastData, ToastType } from '../components/Toast';
+
+export type AppTab = 'viewer' | 'library';
+export type Perspective = 'front' | 'top' | 'left' | 'right' | 'iso';
 
 export function useVisorController() {
   // State
@@ -8,13 +12,23 @@ export function useVisorController() {
   const [isUploading, setIsUploading] = useState(false);
   const [isDragOver, setIsDragOver] = useState(false);
   const [toasts, setToasts] = useState<ToastData[]>([]);
-  
+  const [libraryItems, setLibraryItems] = useState<any[]>([]);
+  const [cameraOrbit, setCameraOrbit] = useState<string>('45deg 55deg 105%');
+  const [showGrid, setShowGrid] = useState<boolean>(false);
+  const [currentTab, setCurrentTab] = useState<AppTab>('viewer');
+
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const modelViewerRef = useRef<any>(null);
+
+  // Cargar librería al inicio
+  useEffect(() => {
+    LibraryModel.fetchLibrary().then(items => setLibraryItems(items.reverse()));
+  }, []);
 
   // Limpieza de memoria al desmontar
   useEffect(() => {
     return () => {
-      if (modelUrl) FileModel.revokeLocalUrl(modelUrl);
+      if (modelUrl && modelUrl.startsWith('blob:')) FileModel.revokeLocalUrl(modelUrl);
     };
   }, [modelUrl]);
 
@@ -22,7 +36,7 @@ export function useVisorController() {
   const showToast = useCallback((message: string, type: ToastType = 'info') => {
     const id = Date.now();
     setToasts(prev => [...prev, { id, message, type }]);
-    
+
     // Auto-eliminar
     setTimeout(() => {
       setToasts(prev => prev.filter(t => t.id !== id));
@@ -30,31 +44,53 @@ export function useVisorController() {
   }, []);
 
   // Lógica principal de procesamiento de archivo
+  const setPerspective = (persp: Perspective) => {
+    const orbits = {
+      front: '0deg 90deg 105%',
+      top: '0deg 0deg 105%',
+      left: '-90deg 90deg 105%',
+      right: '90deg 90deg 105%',
+      iso: '45deg 55deg 105%'
+    };
+    
+    // Actuamos directamente sobre el componente web si existe
+    if (modelViewerRef.current) {
+      modelViewerRef.current.cameraOrbit = orbits[persp];
+    } else {
+      setCameraOrbit(orbits[persp]); // Fallback
+    }
+  };
+
+  const toggleGrid = () => setShowGrid(!showGrid);
+
   const processFile = async (file: File) => {
     if (!FileModel.isValidExtension(file.name)) {
       showToast('Formato no soportado. Usa .glb, .gltf o .blend', 'warning');
       return;
     }
 
-    if (FileModel.isBlenderFile(file.name)) {
-      // Proceso Backend
-      setIsUploading(true);
-      showToast('Enviando .blend al servidor...', 'info');
-      
-      try {
-        const objectUrl = await FileModel.convertBlendToGlb(file);
-        setModelUrl(objectUrl);
-        showToast('Conversión completada con éxito', 'success');
-      } catch (error: any) {
-        showToast(`Fallo crítico: ${error.message}`, 'error');
-      } finally {
-        setIsUploading(false);
+    setIsUploading(true);
+
+    try {
+      if (FileModel.isBlenderFile(file.name)) {
+        // Proceso Backend: Convertir y guardar en librería
+        showToast('Enviando .blend al servidor...', 'info');
+        const newItem = await FileModel.convertBlendToGlb(file);
+        setModelUrl(newItem.url);
+        setLibraryItems(prev => [newItem, ...prev]);
+        showToast('Conversión guardada en Biblioteca', 'success');
+      } else {
+        // Proceso Backend: Subir archivo estático a la librería
+        showToast('Guardando modelo en Biblioteca...', 'info');
+        const newItem = await LibraryModel.uploadToLibrary(file);
+        setModelUrl(newItem.url);
+        setLibraryItems(prev => [newItem, ...prev]);
+        showToast('Modelo guardado exitosamente', 'success');
       }
-    } else {
-      // Proceso Local Frontend
-      const objectUrl = FileModel.createLocalUrl(file);
-      setModelUrl(objectUrl);
-      showToast('Modelo cargado exitosamente', 'success');
+    } catch (error: any) {
+      showToast(`Fallo crítico: ${error.message}`, 'error');
+    } finally {
+      setIsUploading(false);
     }
   };
 
@@ -78,9 +114,15 @@ export function useVisorController() {
   };
 
   const closeViewer = () => {
-    if (modelUrl) FileModel.revokeLocalUrl(modelUrl);
+    if (modelUrl && modelUrl.startsWith('blob:')) FileModel.revokeLocalUrl(modelUrl);
     setModelUrl(null);
     if (fileInputRef.current) fileInputRef.current.value = "";
+  };
+
+  const openFromLibrary = (url: string) => {
+    setModelUrl(url);
+    setCurrentTab('viewer'); // Cambia automáticamente a la vista del modelo
+    showToast('Abriendo desde la Biblioteca', 'info');
   };
 
   return {
@@ -89,13 +131,22 @@ export function useVisorController() {
     isUploading,
     isDragOver,
     toasts,
+    libraryItems,
+    cameraOrbit,
+    showGrid,
+    currentTab,
     fileInputRef,
-    
+    modelViewerRef,
+
     // Acciones
     setIsDragOver,
     handleDrop,
     handleFileChange,
     openFileDialog,
-    closeViewer
+    closeViewer,
+    openFromLibrary,
+    setCurrentTab,
+    setPerspective,
+    toggleGrid
   };
 }

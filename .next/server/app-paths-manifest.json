@@ -2,5 +2,7 @@
   "/_global-error/page": "app/_global-error/page.js",
   "/_not-found/page": "app/_not-found/page.js",
   "/api/convert/route": "app/api/convert/route.js",
+  "/api/library/route": "app/api/library/route.js",
+  "/api/upload/route": "app/api/upload/route.js",
   "/page": "app/page.js"
 }

@@ -38,9 +38,9 @@ export class FileModel {
   }
 
   /**
-   * Envía el archivo .blend al backend para su conversión y devuelve la URL del .glb
+   * Envía el archivo .blend al backend para su conversión y guardado
    */
-  static async convertBlendToGlb(file: File): Promise<string> {
+  static async convertBlendToGlb(file: File): Promise<any> {
     const formData = new FormData();
     formData.append('file', file);
 
@@ -49,18 +49,11 @@ export class FileModel {
       body: formData,
     });
 
-    if (!response.ok) {
-      let errorMsg = 'Error al convertir en el servidor';
-      try {
-        const errorData = await response.json();
-        errorMsg = errorData.error || errorMsg;
-      } catch (e) {
-        // Ignorar si no hay JSON
-      }
-      throw new Error(errorMsg);
+    const data = await response.json();
+    if (!response.ok || !data.success) {
+      throw new Error(data.error || 'Error al convertir en el servidor');
     }
 
-    const blob = await response.blob();
-    return URL.createObjectURL(blob);
+    return data.item;
   }
 }
