@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { Canvas } from '@react-three/fiber';
-import { OrbitControls, Grid, GizmoHelper, GizmoViewport, Environment, useGLTF, Center } from '@react-three/drei';
+import { OrbitControls, Grid, GizmoHelper, GizmoViewport, Environment, useGLTF, Center, Bounds } from '@react-three/drei';
 import * as THREE from 'three';
 
 function Model({ url, onSizeUpdate }: { url: string, onSizeUpdate: (size: number) => void }) {
@@ -89,11 +89,13 @@ export default function ThreeViewer({ modelUrl, autoRotate, showGrid, perspectiv
         <directionalLight position={[10, 10, 10]} intensity={1.5} castShadow />
         <Environment preset="city" />
 
-        {/* Modelo 3D centrado automáticamente */}
+        {/* Modelo 3D centrado automáticamente y Cámara ajustada dinámicamente al tamaño */}
         {modelUrl && (
-          <Center>
-            <Model url={modelUrl} onSizeUpdate={setModelSize} />
-          </Center>
+          <Bounds fit clip observe margin={1.2}>
+            <Center>
+              <Model url={modelUrl} onSizeUpdate={setModelSize} />
+            </Center>
+          </Bounds>
         )}
 
         {/* Malla 3D en el piso (Estilo Blender) - Adaptable a escala */}
