@@ -18,7 +18,7 @@ bpy.ops.export_scene.gltf(
     export_apply=True,
     export_animations=True,
     export_cameras=False,
-    export_lights=False
+    export_lights=True
 )
 
 print(f"Exportación exitosa a {output_path}")

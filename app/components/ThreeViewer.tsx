@@ -84,9 +84,10 @@ interface ThreeViewerProps {
   autoRotate: boolean;
   showGrid: boolean;
   perspective: string;
+  studioLight: boolean;
 }
 
-export default function ThreeViewer({ modelUrl, autoRotate, showGrid, perspective }: ThreeViewerProps) {
+export default function ThreeViewer({ modelUrl, autoRotate, showGrid, perspective, studioLight }: ThreeViewerProps) {
   const [modelSize, setModelSize] = useState<number>(10);
 
   // Escala dinámica de la malla basada en el tamaño del modelo
@@ -97,10 +98,21 @@ export default function ThreeViewer({ modelUrl, autoRotate, showGrid, perspectiv
   return (
     <div style={{ width: '100%', height: '100%' }}>
       <Canvas shadows camera={{ position: [5, 5, 5], fov: 50 }}>
-        {/* Luces (Setup clásico de Blender) */}
-        <ambientLight intensity={0.5} />
-        <directionalLight position={[10, 10, 10]} intensity={1.5} castShadow />
-        <Environment preset="city" />
+        {/* Luces Condicionales */}
+        {studioLight ? (
+          <>
+            {/* Setup clásico de Visor Web */}
+            <ambientLight intensity={0.5} />
+            <directionalLight position={[10, 10, 10]} intensity={1.5} castShadow />
+            <Environment preset="city" />
+          </>
+        ) : (
+          <>
+            {/* Luces Nativas del Modelo: Entorno neutro oscuro solo para reflejos de PBR */}
+            <ambientLight intensity={0.1} />
+            <Environment preset="city" background={false} environmentIntensity={0.2} />
+          </>
+        )}
 
         {/* Modelo 3D centrado automáticamente y Cámara ajustada dinámicamente al tamaño */}
         {modelUrl && (

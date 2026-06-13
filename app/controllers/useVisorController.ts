@@ -16,6 +16,7 @@ export function useVisorController() {
   const [currentPerspective, setCurrentPerspective] = useState<string>('iso');
   const [showGrid, setShowGrid] = useState<boolean>(true);
   const [autoRotate, setAutoRotate] = useState<boolean>(true);
+  const [studioLight, setStudioLight] = useState<boolean>(true);
   const [currentTab, setCurrentTab] = useState<AppTab>('viewer');
 
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -51,6 +52,7 @@ export function useVisorController() {
 
   const toggleGrid = () => setShowGrid(!showGrid);
   const toggleAutoRotate = () => setAutoRotate(!autoRotate);
+  const toggleStudioLight = () => setStudioLight(!studioLight);
 
   const processFile = async (file: File) => {
     if (!FileModel.isValidExtension(file.name)) {
@@ -124,6 +126,7 @@ export function useVisorController() {
     currentPerspective,
     showGrid,
     autoRotate,
+    studioLight,
     currentTab,
     fileInputRef,
 
@@ -138,6 +141,7 @@ export function useVisorController() {
     setPerspective,
     toggleGrid,
     setShowGrid,
-    toggleAutoRotate
+    toggleAutoRotate,
+    toggleStudioLight
   };
 }
