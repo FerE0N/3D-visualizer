@@ -61,7 +61,7 @@ function CameraController({ autoRotate, perspective }: { autoRotate: boolean, pe
       ref={controlsRef} 
       makeDefault 
       autoRotate={autoRotate} 
-      autoRotateSpeed={2}
+      autoRotateSpeed={0.5} /* Reducido de 2 a 0.5 para un giro suave */
     />
   );
 }
