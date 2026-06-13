@@ -1,11 +1,23 @@
 "use client";
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, Grid, GizmoHelper, GizmoViewport, Environment, useGLTF, Center } from '@react-three/drei';
+import * as THREE from 'three';
 
-function Model({ url }: { url: string }) {
+function Model({ url, onSizeUpdate }: { url: string, onSizeUpdate: (size: number) => void }) {
   const { scene } = useGLTF(url);
+  
+  useEffect(() => {
+    if (scene) {
+      const box = new THREE.Box3().setFromObject(scene);
+      const size = new THREE.Vector3();
+      box.getSize(size);
+      const maxDim = Math.max(size.x, size.y, size.z);
+      onSizeUpdate(maxDim > 0.001 ? maxDim : 10);
+    }
+  }, [scene, onSizeUpdate]);
+
   // Clonar opcional, pero useGLTF gestiona caché automáticamente
   return <primitive object={scene} />;
 }
@@ -63,6 +75,13 @@ interface ThreeViewerProps {
 }
 
 export default function ThreeViewer({ modelUrl, autoRotate, showGrid, perspective, onInteract }: ThreeViewerProps) {
+  const [modelSize, setModelSize] = useState<number>(10);
+
+  // Escala dinámica de la malla basada en el tamaño del modelo
+  const sectionSize = modelSize; // Cada bloque grande es igual al tamaño del modelo
+  const cellSize = sectionSize / 10; // Las divisiones son 1/10
+  const fadeDistance = sectionSize * 10; // La malla se difumina a 10 veces el tamaño
+
   return (
     <div style={{ width: '100%', height: '100%' }} onPointerDown={onInteract}>
       <Canvas shadows camera={{ position: [5, 5, 5], fov: 50 }}>
@@ -74,15 +93,17 @@ export default function ThreeViewer({ modelUrl, autoRotate, showGrid, perspectiv
         {/* Modelo 3D centrado automáticamente */}
         {modelUrl && (
           <Center>
-            <Model url={modelUrl} />
+            <Model url={modelUrl} onSizeUpdate={setModelSize} />
           </Center>
         )}
 
-        {/* Malla 3D en el piso (Estilo Blender) */}
+        {/* Malla 3D en el piso (Estilo Blender) - Adaptable a escala */}
         {showGrid && (
           <Grid 
             infiniteGrid 
-            fadeDistance={50} 
+            fadeDistance={fadeDistance} 
+            sectionSize={sectionSize}
+            cellSize={cellSize}
             sectionColor="#6b7280" 
             cellColor="#374151" 
             position={[0, -0.01, 0]} 
