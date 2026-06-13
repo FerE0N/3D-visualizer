@@ -25,36 +25,49 @@ function Model({ url, onSizeUpdate }: { url: string, onSizeUpdate: (size: number
 // Wrapper para los controles que responde a la perspectiva
 function CameraController({ autoRotate, perspective }: { autoRotate: boolean, perspective: string }) {
   const controlsRef = useRef<any>(null);
+  const { camera } = useThree();
 
   useEffect(() => {
     if (!controlsRef.current) return;
     const ctrl = controlsRef.current;
     
-    // Angulos esféricos (Azimut, Polar)
+    // Obtenemos la distancia actual al objetivo para no perder el zoom
+    const distance = camera.position.distanceTo(ctrl.target);
+    
+    let azimuth = 0;
+    let polar = Math.PI / 2;
+
     switch(perspective) {
       case 'front':
-        ctrl.setAzimuthalAngle(0);
-        ctrl.setPolarAngle(Math.PI / 2);
+        azimuth = 0;
+        polar = Math.PI / 2;
         break;
       case 'top':
-        ctrl.setAzimuthalAngle(0);
-        ctrl.setPolarAngle(0);
+        azimuth = 0;
+        polar = 0.001; // Evita el Gimbal Lock
         break;
       case 'left':
-        ctrl.setAzimuthalAngle(-Math.PI / 2);
-        ctrl.setPolarAngle(Math.PI / 2);
+        azimuth = -Math.PI / 2;
+        polar = Math.PI / 2;
         break;
       case 'right':
-        ctrl.setAzimuthalAngle(Math.PI / 2);
-        ctrl.setPolarAngle(Math.PI / 2);
+        azimuth = Math.PI / 2;
+        polar = Math.PI / 2;
         break;
       case 'iso':
       default:
-        ctrl.setAzimuthalAngle(Math.PI / 4);
-        ctrl.setPolarAngle(Math.PI / 3);
+        azimuth = Math.PI / 4;
+        polar = Math.PI / 3;
         break;
     }
-  }, [perspective]);
+
+    // Convertir de esféricas a cartesianas
+    camera.position.setFromSphericalCoords(distance, polar, azimuth);
+    // Sumar la posición del objetivo por si no está en 0,0,0
+    camera.position.add(ctrl.target);
+    ctrl.update();
+
+  }, [perspective, camera]);
 
   return (
     <OrbitControls 
