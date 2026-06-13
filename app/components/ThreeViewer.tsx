@@ -71,10 +71,9 @@ interface ThreeViewerProps {
   autoRotate: boolean;
   showGrid: boolean;
   perspective: string;
-  onInteract: () => void;
 }
 
-export default function ThreeViewer({ modelUrl, autoRotate, showGrid, perspective, onInteract }: ThreeViewerProps) {
+export default function ThreeViewer({ modelUrl, autoRotate, showGrid, perspective }: ThreeViewerProps) {
   const [modelSize, setModelSize] = useState<number>(10);
 
   // Escala dinámica de la malla basada en el tamaño del modelo
@@ -83,7 +82,7 @@ export default function ThreeViewer({ modelUrl, autoRotate, showGrid, perspectiv
   const fadeDistance = sectionSize * 10; // La malla se difumina a 10 veces el tamaño
 
   return (
-    <div style={{ width: '100%', height: '100%' }} onPointerDown={onInteract}>
+    <div style={{ width: '100%', height: '100%' }}>
       <Canvas shadows camera={{ position: [5, 5, 5], fov: 50 }}>
         {/* Luces (Setup clásico de Blender) */}
         <ambientLight intensity={0.5} />

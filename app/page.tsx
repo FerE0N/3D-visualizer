@@ -152,7 +152,6 @@ export default function Home() {
                   autoRotate={ctrl.autoRotate} 
                   showGrid={ctrl.showGrid} 
                   perspective={ctrl.currentPerspective}
-                  onInteract={() => ctrl.setShowGrid(false)} 
                 />
                 
                 <div className="viewer-controls">
