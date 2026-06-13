@@ -86,7 +86,7 @@ body {
   border-bottom: 1px solid var(--glass-border);
   -webkit-backdrop-filter: blur(12px);
   z-index: 9;
-  background: #0f172acc;
+  background: #1a1a1acc;
   flex: none;
   align-items: center;
   gap: 1.5rem;
@@ -114,8 +114,8 @@ body {
 }
 
 .nav-item.active {
-  color: var(--accent);
-  border-bottom-color: var(--accent);
+  color: var(--text-primary);
+  border-bottom-color: var(--text-primary);
 }
 
 .nav-icon {
@@ -153,9 +153,9 @@ body {
 }
 
 .upload-section:hover, .upload-section.dragover {
-  border-color: var(--accent);
+  border-color: var(--text-primary);
   box-shadow: var(--shadow-glow);
-  background: #3b82f60d;
+  background: #ffffff0d;
 }
 
 .upload-content {
@@ -211,17 +211,14 @@ body {
 }
 
 .viewer-section.viewer-grid {
-  background-color: #0f172a;
-  background-image: linear-gradient(#3b82f633 1px, #0000 1px), linear-gradient(90deg, #3b82f633 1px, #0000 1px), linear-gradient(#3b82f61a 1px, #0000 1px), linear-gradient(90deg, #3b82f61a 1px, #0000 1px);
-  background-position: center;
-  background-size: 100px 100px, 100px 100px, 20px 20px, 20px 20px;
+  background-color: var(--bg-primary);
 }
 
 .tools-panel {
   border: 1px solid var(--glass-border);
   -webkit-backdrop-filter: blur(16px);
   z-index: 20;
-  background: #0f172a99;
+  background: #1a1a1a99;
   border-radius: 50px;
   flex-direction: row;
   gap: .75rem;
@@ -255,9 +252,9 @@ body {
 }
 
 .tool-btn:hover, .tool-btn.active {
-  color: var(--accent);
-  background: #3b82f633;
-  border-color: #3b82f64d;
+  color: var(--text-primary);
+  background: #ffffff1a;
+  border-color: #fff3;
 }
 
 model-viewer {
