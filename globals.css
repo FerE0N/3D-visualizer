@@ -2,29 +2,29 @@
    Variables y Sistema de Diseño
    ========================================================================== */
 :root {
-    /* Paleta de Colores (Dark Mode Premium) */
-    --bg-primary: #0f172a;
-    --bg-secondary: #1e293b;
-    --accent: #3b82f6;
-    --accent-hover: #2563eb;
-    --text-primary: #f8fafc;
-    --text-secondary: #94a3b8;
+    /* Paleta de Colores (OS Dark Mode Neutro) */
+    --bg-primary: #111111;
+    --bg-secondary: #1a1a1a;
+    --accent: #333333;
+    --accent-hover: #444444;
+    --text-primary: #f5f5f5;
+    --text-secondary: #a3a3a3;
     
     /* Notificaciones */
     --toast-error: #ef4444;
     --toast-warning: #eab308;
     --toast-success: #22c55e;
-    --toast-info: #3b82f6;
+    --toast-info: #525252;
     
     /* Glassmorphism */
-    --glass-bg: rgba(30, 41, 59, 0.7);
-    --glass-border: rgba(255, 255, 255, 0.1);
-    --glass-blur: blur(12px);
+    --glass-bg: rgba(26, 26, 26, 0.75);
+    --glass-border: rgba(255, 255, 255, 0.08);
+    --glass-blur: blur(16px);
     
     /* Sombras */
-    --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-    --shadow-glow: 0 0 20px rgba(59, 130, 246, 0.4);
+    --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px -1px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
+    --shadow-glow: 0 0 20px rgba(255, 255, 255, 0.05);
 
     /* Radios y Espaciado */
     --radius-lg: 16px;
@@ -51,7 +51,7 @@ body {
     justify-content: center;
     align-items: center;
     overflow-x: hidden;
-    background: radial-gradient(circle at top right, #1e293b 0%, #0f172a 100%);
+    background: radial-gradient(circle at top right, #242424 0%, #111111 100%);
 }
 
 /* ==========================================================================

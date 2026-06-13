@@ -1,21 +1,21 @@
 /* [project]/globals.css [app-client] (css) */
 :root {
-  --bg-primary: #0f172a;
-  --bg-secondary: #1e293b;
-  --accent: #3b82f6;
-  --accent-hover: #2563eb;
-  --text-primary: #f8fafc;
-  --text-secondary: #94a3b8;
+  --bg-primary: #111;
+  --bg-secondary: #1a1a1a;
+  --accent: #333;
+  --accent-hover: #444;
+  --text-primary: #f5f5f5;
+  --text-secondary: #a3a3a3;
   --toast-error: #ef4444;
   --toast-warning: #eab308;
   --toast-success: #22c55e;
-  --toast-info: #3b82f6;
-  --glass-bg: #1e293bb3;
-  --glass-border: #ffffff1a;
-  --glass-blur: blur(12px);
-  --shadow-sm: 0 4px 6px -1px #0000001a, 0 2px 4px -1px #0000000f;
-  --shadow-lg: 0 10px 15px -3px #0000001a, 0 4px 6px -2px #0000000d;
-  --shadow-glow: 0 0 20px #3b82f666;
+  --toast-info: #525252;
+  --glass-bg: #1a1a1abf;
+  --glass-border: #ffffff14;
+  --glass-blur: blur(16px);
+  --shadow-sm: 0 4px 6px -1px #0003, 0 2px 4px -1px #0000001a;
+  --shadow-lg: 0 10px 15px -3px #0000004d, 0 4px 6px -2px #0003;
+  --shadow-glow: 0 0 20px #ffffff0d;
   --radius-lg: 16px;
   --radius-md: 12px;
   --radius-sm: 8px;
@@ -31,7 +31,7 @@
 body {
   background-color: var(--bg-primary);
   color: var(--text-primary);
-  background: radial-gradient(circle at 100% 0, #1e293b 0%, #0f172a 100%);
+  background: radial-gradient(circle at 100% 0, #242424 0%, #111 100%);
   justify-content: center;
   align-items: center;
   min-height: 100vh;
