@@ -4,7 +4,7 @@
 // ==========================================
 
 export class FileModel {
-  static readonly VALID_EXTENSIONS = ['.glb', '.gltf', '.blend'];
+  static readonly VALID_EXTENSIONS = ['.glb', '.gltf', '.blend', '.stl', '.obj', '.fbx', '.dae', '.ply', '.3ds'];
 
   /**
    * Verifica si la extensión del archivo es válida
@@ -15,10 +15,11 @@ export class FileModel {
   }
 
   /**
-   * Verifica si un archivo es un .blend (requiere conversión en backend)
+   * Verifica si el archivo necesita conversión en el backend (no es glb nativo)
    */
-  static isBlenderFile(fileName: string): boolean {
-    return fileName.toLowerCase().endsWith('.blend');
+  static isConvertibleFile(fileName: string): boolean {
+    const name = fileName.toLowerCase();
+    return !name.endsWith('.glb') && !name.endsWith('.gltf');
   }
 
   /**

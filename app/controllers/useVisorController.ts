@@ -56,16 +56,16 @@ export function useVisorController() {
 
   const processFile = async (file: File) => {
     if (!FileModel.isValidExtension(file.name)) {
-      showToast('Formato no soportado. Usa .glb, .gltf o .blend', 'warning');
+      showToast('Formato no soportado. Usa .glb, .blend, .stl, .obj, .fbx...', 'warning');
       return;
     }
 
-    setIsUploading(true);
-
     try {
-      if (FileModel.isBlenderFile(file.name)) {
-        // Proceso Backend: Convertir y guardar en librería
-        showToast('Enviando .blend al servidor...', 'info');
+      setIsUploading(true);
+
+      if (FileModel.isConvertibleFile(file.name)) {
+        // Proceso Backend: Subir .blend, .stl, .obj, etc. para convertir a .glb
+        showToast('Convirtiendo formato universal a GLB optimizado...', 'info');
         const newItem = await FileModel.convertBlendToGlb(file);
         setModelUrl(newItem.url);
         setLibraryItems(prev => [newItem, ...prev]);

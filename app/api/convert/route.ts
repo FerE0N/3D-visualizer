@@ -15,8 +15,12 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'No se recibió ningún archivo' }, { status: 400 });
     }
 
-    if (!file.name.endsWith('.blend')) {
-      return NextResponse.json({ error: 'El archivo debe ser .blend' }, { status: 400 });
+    const validExtensions = ['.blend', '.stl', '.obj', '.fbx', '.dae', '.ply', '.3ds'];
+    const originalName = file.name;
+    const ext = path.extname(originalName).toLowerCase();
+
+    if (!validExtensions.includes(ext)) {
+      return NextResponse.json({ error: 'Formato no soportado por el conversor universal' }, { status: 400 });
     }
 
     // Preparar directorio temporal
@@ -27,27 +31,35 @@ export async function POST(req: NextRequest) {
 
     // Nombres únicos
     const timestamp = Date.now();
-    const originalName = file.name;
     const saveName = `${timestamp}_${originalName.replace(/[^a-z0-9.]/gi, '_').toLowerCase()}`;
     
-    // El .blend sigue siendo temporal
-    const inputPath = path.join(tmpDir, `${timestamp}_in.blend`);
+    // El archivo subido sigue siendo temporal
+    const inputPath = path.join(tmpDir, `${timestamp}_in${ext}`);
     // El .glb se guarda permanentemente en public/models/
     const publicModelsPath = path.join(process.cwd(), 'public', 'models');
     if (!existsSync(publicModelsPath)) {
       await mkdir(publicModelsPath, { recursive: true });
     }
-    const outputPath = path.join(publicModelsPath, saveName.replace('.blend', '.glb'));
-    const finalUrl = `/models/${saveName.replace('.blend', '.glb')}`;
+    
+    const outputFileName = saveName.replace(ext, '.glb');
+    const outputPath = path.join(publicModelsPath, outputFileName);
+    const finalUrl = `/models/${outputFileName}`;
     const scriptPath = path.join(process.cwd(), 'scripts', 'export_glb.py');
 
-    // Escribir archivo .blend al disco
+    // Escribir archivo original al disco
     const buffer = Buffer.from(await file.arrayBuffer());
     await writeFile(inputPath, buffer);
 
     // Ruta absoluta a Blender encontrada en tu sistema
     const blenderPath = 'C:\\Program Files\\Blender Foundation\\Blender 5.1\\blender.exe';
-    const command = `"${blenderPath}" -b "${inputPath}" --python "${scriptPath}" -- "${outputPath}"`;
+    
+    // Si es .blend, Blender lo abre como su archivo principal. Si es otro, abrimos Blender vacío y el script importa.
+    let command;
+    if (ext === '.blend') {
+      command = `"${blenderPath}" -b "${inputPath}" --python "${scriptPath}" -- "${outputPath}"`;
+    } else {
+      command = `"${blenderPath}" -b --python "${scriptPath}" -- "${inputPath}" "${outputPath}"`;
+    }
 
     await new Promise((resolve, reject) => {
       exec(command, (error, stdout, stderr) => {
