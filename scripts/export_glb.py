@@ -59,7 +59,21 @@ else:
     print("Uso incorrecto del script.")
     sys.exit(1)
 
-# Exportar toda la escena (ya sea el .blend cargado o el archivo recién importado)
+# Algoritmo de curación de geometría: Recalcular normales hacia afuera
+# Seleccionar y activar cada malla para entrar a modo de edición y recalcular
+bpy.ops.object.select_all(action='DESELECT')
+for obj in bpy.context.scene.objects:
+    if obj.type == 'MESH':
+        obj.select_set(True)
+        bpy.context.view_layer.objects.active = obj
+        bpy.ops.object.mode_set(mode='EDIT')
+        bpy.ops.mesh.select_all(action='SELECT')
+        # make_consistent(inside=False) obliga a las normales a mirar hacia el exterior
+        bpy.ops.mesh.normals_make_consistent(inside=False)
+        bpy.ops.object.mode_set(mode='OBJECT')
+        obj.select_set(False)
+
+# Exportar toda la escena (ya sea el .blend cargado o el archivo recién importado y curado)
 bpy.ops.export_scene.gltf(
     filepath=output_path,
     export_format='GLB',
