@@ -363,12 +363,107 @@ model-viewer {
 }
 
 .library-card .card-date {
-    font-size: 0.75rem;
-    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: var(--accent);
 }
 
 /* ==========================================================================
-   Botones y Elementos UI
+   PANEL LATERAL (BLENDER N-PANEL STYLE)
+   ========================================================================== */
+.viewer-layout {
+  display: flex;
+  width: 100%;
+  height: calc(100vh - 160px);
+  gap: 16px;
+}
+
+.viewer-main {
+  flex: 1;
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--glass-border);
+}
+
+.properties-panel {
+  width: 280px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow-y: auto;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.properties-panel::-webkit-scrollbar {
+  width: 6px;
+}
+
+.properties-panel::-webkit-scrollbar-thumb {
+  background: #4b5563;
+  border-radius: 3px;
+}
+
+.panel-header {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.property-group {
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--glass-border);
+  border-radius: 6px;
+  padding: 12px;
+}
+
+.property-group h3 {
+  font-size: 13px;
+  color: #e5e7eb;
+  margin: 0 0 10px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.property-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 6px;
+  font-size: 12px;
+}
+
+.property-row:last-child {
+  margin-bottom: 0;
+}
+
+.property-label {
+  color: #9ca3af;
+}
+
+.property-value {
+  color: #f3f4f6;
+  font-family: monospace;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 2px 6px;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* ==========================================================================
+   ANIMACIONES
    ========================================================================== */
 button {
     cursor: pointer;

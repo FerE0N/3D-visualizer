@@ -101,75 +101,140 @@ export default function Home() {
                 </div>
               </div>
             ) : (
-              <div className="viewer-section">
-                
-                {/* PANEL DE HERRAMIENTAS FLOTANTE */}
-                <div className="tools-panel">
-                  <button className="tool-btn" onClick={() => ctrl.setPerspective('front')} title="Frente">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                      <line x1="3" y1="12" x2="21" y2="12"></line>
-                    </svg>
-                  </button>
-                  <button className="tool-btn" onClick={() => ctrl.setPerspective('top')} title="Arriba">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                      <line x1="12" y1="3" x2="12" y2="21"></line>
-                    </svg>
-                  </button>
-                  <button className="tool-btn" onClick={() => ctrl.setPerspective('iso')} title="Isométrico">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
-                      <polyline points="2 17 12 22 22 17"></polyline>
-                      <polyline points="2 12 12 17 22 12"></polyline>
-                    </svg>
-                  </button>
-                  <hr style={{borderColor: 'var(--glass-border)', margin: '4px 0'}} />
-                  <button className={`tool-btn ${ctrl.autoRotate ? 'active' : ''}`} onClick={ctrl.toggleAutoRotate} title="Giro Automático">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
-                      <path d="M3 3v5h5"></path>
-                    </svg>
-                  </button>
-                  <button className={`tool-btn ${ctrl.showGrid ? 'active' : ''}`} onClick={ctrl.toggleGrid} title="Mostrar/Ocultar Malla">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M3 3h18v18H3z"></path>
-                      <path d="M3 9h18"></path>
-                      <path d="M3 15h18"></path>
-                      <path d="M9 3v18"></path>
-                      <path d="M15 3v18"></path>
-                    </svg>
-                  </button>
-                  <button className={`tool-btn ${ctrl.studioLight ? 'active' : ''}`} onClick={ctrl.toggleStudioLight} title="Alternar entre Luz del Visor y Luz Nativas">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <circle cx="12" cy="12" r="5"></circle>
-                      <line x1="12" y1="1" x2="12" y2="3"></line>
-                      <line x1="12" y1="21" x2="12" y2="23"></line>
-                      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-                      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-                      <line x1="1" y1="12" x2="3" y2="12"></line>
-                      <line x1="21" y1="12" x2="23" y2="12"></line>
-                      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-                      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-                    </svg>
-                  </button>
-                  <hr style={{borderColor: 'var(--glass-border)', margin: '4px 0'}} />
-                  <button className="tool-btn danger" onClick={ctrl.closeViewer} title="Cerrar Visor">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <line x1="18" y1="6" x2="6" y2="18"></line>
-                      <line x1="6" y1="6" x2="18" y2="18"></line>
-                    </svg>
-                  </button>
+              <div className="viewer-layout">
+                {/* ÁREA DEL VISOR (IZQUIERDA) */}
+                <div className="viewer-main">
+                  {/* PANEL DE HERRAMIENTAS FLOTANTE */}
+                  <div className="tools-panel">
+                    <button className="tool-btn" onClick={() => ctrl.setPerspective('front')} title="Frente">
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                      </svg>
+                    </button>
+                    <button className="tool-btn" onClick={() => ctrl.setPerspective('top')} title="Arriba">
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                        <line x1="12" y1="3" x2="12" y2="21"></line>
+                      </svg>
+                    </button>
+                    <button className="tool-btn" onClick={() => ctrl.setPerspective('iso')} title="Isométrico">
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+                        <polyline points="2 17 12 22 22 17"></polyline>
+                        <polyline points="2 12 12 17 22 12"></polyline>
+                      </svg>
+                    </button>
+                    <hr style={{borderColor: 'var(--glass-border)', margin: '4px 0'}} />
+                    <button className={`tool-btn ${ctrl.autoRotate ? 'active' : ''}`} onClick={ctrl.toggleAutoRotate} title="Giro Automático">
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+                        <path d="M3 3v5h5"></path>
+                      </svg>
+                    </button>
+                    <button className={`tool-btn ${ctrl.showGrid ? 'active' : ''}`} onClick={ctrl.toggleGrid} title="Mostrar/Ocultar Malla">
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M3 3h18v18H3z"></path>
+                        <path d="M3 9h18"></path>
+                        <path d="M3 15h18"></path>
+                        <path d="M9 3v18"></path>
+                        <path d="M15 3v18"></path>
+                      </svg>
+                    </button>
+                    <button className={`tool-btn ${ctrl.studioLight ? 'active' : ''}`} onClick={ctrl.toggleStudioLight} title="Alternar entre Luz del Visor y Luz Nativas">
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                      </svg>
+                    </button>
+                    <hr style={{borderColor: 'var(--glass-border)', margin: '4px 0'}} />
+                    <button className="tool-btn danger" onClick={ctrl.closeViewer} title="Cerrar Visor">
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                      </svg>
+                    </button>
+                  </div>
+
+                  <ThreeViewer 
+                    modelUrl={ctrl.modelUrl} 
+                    autoRotate={ctrl.autoRotate} 
+                    showGrid={ctrl.showGrid} 
+                    perspective={ctrl.currentPerspective}
+                    studioLight={ctrl.studioLight}
+                    onMetadataUpdate={ctrl.setModelMetadata}
+                  />
                 </div>
 
-                <ThreeViewer 
-                  modelUrl={ctrl.modelUrl} 
-                  autoRotate={ctrl.autoRotate} 
-                  showGrid={ctrl.showGrid} 
-                  perspective={ctrl.currentPerspective}
-                  studioLight={ctrl.studioLight}
-                />
+                {/* PANEL LATERAL DE PROPIEDADES (DERECHA) */}
+                {ctrl.modelMetadata && (
+                  <div className="properties-panel">
+                    <div className="panel-header">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="16" x2="12" y2="12"></line>
+                        <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                      </svg>
+                      Propiedades del Modelo
+                    </div>
 
+                    <div className="property-group">
+                      <h3>
+                        Transform
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <polyline points="21 8 21 21 3 21 3 8"></polyline>
+                          <rect x="1" y="3" width="22" height="5"></rect>
+                          <line x1="10" y1="12" x2="14" y2="12"></line>
+                        </svg>
+                      </h3>
+                      <div className="property-row">
+                        <span className="property-label">Dimensión X</span>
+                        <span className="property-value">{ctrl.modelMetadata.dimensions.x.toFixed(2)}m</span>
+                      </div>
+                      <div className="property-row">
+                        <span className="property-label">Dimensión Y</span>
+                        <span className="property-value">{ctrl.modelMetadata.dimensions.y.toFixed(2)}m</span>
+                      </div>
+                      <div className="property-row">
+                        <span className="property-label">Dimensión Z</span>
+                        <span className="property-value">{ctrl.modelMetadata.dimensions.z.toFixed(2)}m</span>
+                      </div>
+                    </div>
+
+                    <div className="property-group">
+                      <h3>
+                        Statistics
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path>
+                          <path d="M22 12A10 10 0 0 0 12 2v10z"></path>
+                        </svg>
+                      </h3>
+                      <div className="property-row">
+                        <span className="property-label">Vértices</span>
+                        <span className="property-value">{ctrl.modelMetadata.vertices.toLocaleString()}</span>
+                      </div>
+                      <div className="property-row">
+                        <span className="property-label">Caras / Tris</span>
+                        <span className="property-value">{ctrl.modelMetadata.triangles.toLocaleString()}</span>
+                      </div>
+                      <div className="property-row">
+                        <span className="property-label">Mallas (Meshes)</span>
+                        <span className="property-value">{ctrl.modelMetadata.meshes}</span>
+                      </div>
+                      <div className="property-row">
+                        <span className="property-label">Materiales</span>
+                        <span className="property-value">{ctrl.modelMetadata.materials}</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </>

@@ -6,6 +6,14 @@ import { ToastData, ToastType } from '../components/Toast';
 export type AppTab = 'viewer' | 'library';
 export type Perspective = 'front' | 'top' | 'left' | 'right' | 'iso';
 
+export interface ModelMetadata {
+  vertices: number;
+  triangles: number;
+  meshes: number;
+  materials: number;
+  dimensions: { x: number, y: number, z: number };
+}
+
 export function useVisorController() {
   const [modelUrl, setModelUrl] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
@@ -17,6 +25,7 @@ export function useVisorController() {
   const [autoRotate, setAutoRotate] = useState<boolean>(true);
   const [studioLight, setStudioLight] = useState<boolean>(true);
   const [currentTab, setCurrentTab] = useState<AppTab>('viewer');
+  const [modelMetadata, setModelMetadata] = useState<ModelMetadata | null>(null);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -128,6 +137,7 @@ export function useVisorController() {
     studioLight,
     currentTab,
     fileInputRef,
+    modelMetadata,
 
     // Acciones
     setIsDragOver,
@@ -141,6 +151,7 @@ export function useVisorController() {
     toggleGrid,
     setShowGrid,
     toggleAutoRotate,
-    toggleStudioLight
+    toggleStudioLight,
+    setModelMetadata
   };
 }
