@@ -7,13 +7,12 @@ export type AppTab = 'viewer' | 'library';
 export type Perspective = 'front' | 'top' | 'left' | 'right' | 'iso';
 
 export function useVisorController() {
-  // State
   const [modelUrl, setModelUrl] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [isDragOver, setIsDragOver] = useState(false);
   const [toasts, setToasts] = useState<ToastData[]>([]);
   const [libraryItems, setLibraryItems] = useState<any[]>([]);
-  const [currentPerspective, setCurrentPerspective] = useState<string>('iso');
+  const [currentPerspective, setCurrentPerspective] = useState<{view: string, id: number}>({view: 'iso', id: Date.now()});
   const [showGrid, setShowGrid] = useState<boolean>(true);
   const [autoRotate, setAutoRotate] = useState<boolean>(true);
   const [studioLight, setStudioLight] = useState<boolean>(true);
@@ -46,7 +45,7 @@ export function useVisorController() {
 
   // Lógica principal de procesamiento de archivo
   const setPerspective = (persp: Perspective) => {
-    setCurrentPerspective(persp);
+    setCurrentPerspective({view: persp, id: Date.now()});
     setShowGrid(true); // Encender malla inteligentemente
   };
 

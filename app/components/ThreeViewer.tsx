@@ -36,7 +36,7 @@ function Model({ url, onSizeUpdate }: { url: string, onSizeUpdate: (size: number
 }
 
 // Wrapper para los controles que responde a la perspectiva
-function CameraController({ autoRotate, perspective }: { autoRotate: boolean, perspective: string }) {
+function CameraController({ autoRotate, perspective }: { autoRotate: boolean, perspective: {view: string, id: number} }) {
   const controlsRef = useRef<any>(null);
   const { camera } = useThree();
 
@@ -50,7 +50,7 @@ function CameraController({ autoRotate, perspective }: { autoRotate: boolean, pe
     let azimuth = 0;
     let polar = Math.PI / 2;
 
-    switch(perspective) {
+    switch(perspective.view) {
       case 'front':
         azimuth = 0;
         polar = Math.PI / 2;
@@ -96,7 +96,7 @@ interface ThreeViewerProps {
   modelUrl: string | null;
   autoRotate: boolean;
   showGrid: boolean;
-  perspective: string;
+  perspective: {view: string, id: number};
   studioLight: boolean;
 }
 
