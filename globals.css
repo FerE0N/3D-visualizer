@@ -639,4 +639,22 @@ button {
         transform: none;
         border-radius: var(--radius-md);
     }
+
+    .viewer-layout {
+        flex-direction: column;
+        height: calc(100vh - 100px); /* Ajustar altura total para móvil */
+    }
+
+    .viewer-main {
+        flex: none;
+        height: 60%; /* El modelo ocupa el 60% superior */
+        width: 100%;
+    }
+
+    .properties-panel {
+        width: 100%;
+        flex: 1;
+        max-height: none;
+        border-radius: 12px 12px 0 0; /* Bordes redondeados solo arriba */
+    }
 }
