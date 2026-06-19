@@ -105,37 +105,33 @@ export default function Home() {
                 
                 {/* PANEL DE HERRAMIENTAS FLOTANTE */}
                 <div className="tools-panel">
-                  <button className="tool-btn" onClick={() => ctrl.setPerspective('front')}>
+                  <button className="tool-btn" onClick={() => ctrl.setPerspective('front')} title="Frente">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
                       <line x1="3" y1="12" x2="21" y2="12"></line>
                     </svg>
-                    Frente
                   </button>
-                  <button className="tool-btn" onClick={() => ctrl.setPerspective('top')}>
+                  <button className="tool-btn" onClick={() => ctrl.setPerspective('top')} title="Arriba">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
                       <line x1="12" y1="3" x2="12" y2="21"></line>
                     </svg>
-                    Arriba
                   </button>
-                  <button className="tool-btn" onClick={() => ctrl.setPerspective('iso')}>
+                  <button className="tool-btn" onClick={() => ctrl.setPerspective('iso')} title="Isométrico">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
                       <polyline points="2 17 12 22 22 17"></polyline>
                       <polyline points="2 12 12 17 22 12"></polyline>
                     </svg>
-                    Iso
                   </button>
                   <hr style={{borderColor: 'var(--glass-border)', margin: '4px 0'}} />
-                  <button className={`tool-btn ${ctrl.autoRotate ? 'active' : ''}`} onClick={ctrl.toggleAutoRotate}>
+                  <button className={`tool-btn ${ctrl.autoRotate ? 'active' : ''}`} onClick={ctrl.toggleAutoRotate} title="Giro Automático">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
                       <path d="M3 3v5h5"></path>
                     </svg>
-                    Giro
                   </button>
-                  <button className={`tool-btn ${ctrl.showGrid ? 'active' : ''}`} onClick={ctrl.toggleGrid}>
+                  <button className={`tool-btn ${ctrl.showGrid ? 'active' : ''}`} onClick={ctrl.toggleGrid} title="Mostrar/Ocultar Malla">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <path d="M3 3h18v18H3z"></path>
                       <path d="M3 9h18"></path>
@@ -143,9 +139,8 @@ export default function Home() {
                       <path d="M9 3v18"></path>
                       <path d="M15 3v18"></path>
                     </svg>
-                    Malla
                   </button>
-                  <button className={`tool-btn ${ctrl.studioLight ? 'active' : ''}`} onClick={ctrl.toggleStudioLight} title="Alternar entre Luz del Visor y Luz de Blender">
+                  <button className={`tool-btn ${ctrl.studioLight ? 'active' : ''}`} onClick={ctrl.toggleStudioLight} title="Alternar entre Luz del Visor y Luz Nativas">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <circle cx="12" cy="12" r="5"></circle>
                       <line x1="12" y1="1" x2="12" y2="3"></line>
@@ -157,10 +152,14 @@ export default function Home() {
                       <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
                       <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
                     </svg>
-                    Luz
                   </button>
-                  <div className="divider"></div>
-                  <button className="tool-btn" onClick={ctrl.closeViewer}>Cerrar</button>
+                  <hr style={{borderColor: 'var(--glass-border)', margin: '4px 0'}} />
+                  <button className="tool-btn danger" onClick={ctrl.closeViewer} title="Cerrar Visor">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <line x1="18" y1="6" x2="6" y2="18"></line>
+                      <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                  </button>
                 </div>
 
                 <ThreeViewer 
