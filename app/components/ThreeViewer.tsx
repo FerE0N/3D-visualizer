@@ -13,6 +13,19 @@ function Model({ url, onSizeUpdate }: { url: string, onSizeUpdate: (size: number
       const box = new THREE.Box3().setFromObject(scene);
       const size = new THREE.Vector3();
       box.getSize(size);
+      
+      // Encontrar el centro y la base exacta
+      const center = new THREE.Vector3();
+      box.getCenter(center);
+
+      // Calcular el desfase necesario para que el punto más bajo del modelo toque Y=0 (la malla)
+      // Restamos box.min.y al offset inicial del modelo
+      scene.position.y = scene.position.y - box.min.y;
+      
+      // Centrar el modelo horizontalmente respecto a X y Z para que siempre aparezca en el medio
+      scene.position.x = scene.position.x - center.x;
+      scene.position.z = scene.position.z - center.z;
+
       const maxDim = Math.max(size.x, size.y, size.z);
       onSizeUpdate(maxDim > 0.001 ? maxDim : 10);
     }
@@ -93,7 +106,7 @@ export default function ThreeViewer({ modelUrl, autoRotate, showGrid, perspectiv
   // Escala dinámica de la malla basada en el tamaño del modelo
   const sectionSize = modelSize; // Cada bloque grande es igual al tamaño del modelo
   const cellSize = sectionSize / 10; // Las divisiones son 1/10
-  const fadeDistance = sectionSize * 10; // La malla se difumina a 10 veces el tamaño
+  const fadeDistance = sectionSize * 1000; // Aumentado drásticamente para que cubra todo el canvas y no se difumine cerca
 
   return (
     <div style={{ width: '100%', height: '100%' }}>
@@ -114,12 +127,10 @@ export default function ThreeViewer({ modelUrl, autoRotate, showGrid, perspectiv
           </>
         )}
 
-        {/* Modelo 3D centrado automáticamente y Cámara ajustada dinámicamente al tamaño */}
+        {/* Modelo 3D posicionado dinámicamente sobre la malla y Cámara ajustada al tamaño */}
         {modelUrl && (
           <Bounds fit clip observe margin={1.2}>
-            <Center>
-              <Model url={modelUrl} onSizeUpdate={setModelSize} />
-            </Center>
+            <Model url={modelUrl} onSizeUpdate={setModelSize} />
           </Bounds>
         )}
 
