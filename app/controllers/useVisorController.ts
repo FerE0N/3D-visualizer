@@ -26,7 +26,7 @@ export interface ModelMetadata {
   vertices: number;
   triangles: number;
   meshes: number;
-  materials: number;
+  materials: MaterialData[];
   dimensions: { x: number, y: number, z: number };
 }
 

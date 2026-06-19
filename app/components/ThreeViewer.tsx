@@ -16,11 +16,22 @@ function Model({ url, onSizeUpdate, onMetadataUpdate, onMeshSelect }: { url: str
       const size = new THREE.Vector3();
       box.getSize(size);
       
+      const extractMaterialData = (mat: any) => {
+        if (!mat) return [];
+        const matArray = Array.isArray(mat) ? mat : [mat];
+        return matArray.map(m => ({
+          name: m.name || 'Material',
+          colorHex: m.color ? '#' + m.color.getHexString() : '#ffffff',
+          roughness: m.roughness !== undefined ? m.roughness : 0.5,
+          metalness: m.metalness !== undefined ? m.metalness : 0.0
+        }));
+      };
+
       // Extracción de metadatos (Estilo Blender)
       let vertices = 0;
       let triangles = 0;
       let meshes = 0;
-      const materials = new Set();
+      const materialsMap = new Map();
 
       scene.traverse((child: any) => {
         if (child.isMesh) {
@@ -37,20 +48,22 @@ function Model({ url, onSizeUpdate, onMetadataUpdate, onMeshSelect }: { url: str
           }
           if (child.material) {
             if (Array.isArray(child.material)) {
-              child.material.forEach((m: any) => materials.add(m.uuid));
+              child.material.forEach((m: any) => materialsMap.set(m.uuid, m));
             } else {
-              materials.add(child.material.uuid);
+              materialsMap.set(child.material.uuid, child.material);
             }
           }
         }
       });
+
+      const globalMaterials = extractMaterialData(Array.from(materialsMap.values()));
 
       if (onMetadataUpdate) {
         onMetadataUpdate({
           vertices,
           triangles: Math.floor(triangles),
           meshes,
-          materials: materials.size,
+          materials: globalMaterials,
           dimensions: {
             x: size.x,
             y: size.y,

@@ -297,10 +297,29 @@ export default function Home() {
                             <span className="property-label">Mallas (Meshes)</span>
                             <span className="property-value">{ctrl.modelMetadata.meshes}</span>
                           </div>
-                          <div className="property-row">
-                            <span className="property-label">Materiales</span>
-                            <span className="property-value">{ctrl.modelMetadata.materials}</span>
-                          </div>
+                        </div>
+
+                        <div className="property-group">
+                          <h3>
+                            Global Materials ({Array.isArray(ctrl.modelMetadata.materials) ? ctrl.modelMetadata.materials.length : 0})
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                              <circle cx="12" cy="12" r="10"></circle>
+                              <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path>
+                              <path d="M2 12h20"></path>
+                            </svg>
+                          </h3>
+                          {Array.isArray(ctrl.modelMetadata.materials) && ctrl.modelMetadata.materials.map((mat: any, idx: number) => (
+                            <div key={idx} className="material-item">
+                              <div className="material-header">
+                                <span className="color-swatch" style={{ backgroundColor: mat.colorHex || '#ffffff' }}></span>
+                                {mat.name}
+                              </div>
+                              <div className="material-stats">
+                                <span>Rough: {mat.roughness !== undefined ? mat.roughness.toFixed(2) : '0.00'}</span>
+                                <span>Metal: {mat.metalness !== undefined ? mat.metalness.toFixed(2) : '0.00'}</span>
+                              </div>
+                            </div>
+                          ))}
                         </div>
                       </>
                     )}

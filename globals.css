@@ -281,10 +281,17 @@ body {
     height: 18px;
 }
 
-.tool-btn:hover, .tool-btn.active {
+.tool-btn:hover {
     background: rgba(255, 255, 255, 0.1);
     color: var(--text-primary);
     border-color: rgba(255, 255, 255, 0.2);
+}
+
+.tool-btn.active {
+    background: rgba(59, 130, 246, 0.2);
+    color: #60a5fa;
+    border-color: rgba(59, 130, 246, 0.4);
+    box-shadow: 0 0 12px rgba(59, 130, 246, 0.15);
 }
 
 model-viewer {
