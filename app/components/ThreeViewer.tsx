@@ -129,7 +129,7 @@ export default function ThreeViewer({ modelUrl, autoRotate, showGrid, perspectiv
 
         {/* Modelo 3D posicionado dinámicamente sobre la malla y Cámara ajustada al tamaño */}
         {modelUrl && (
-          <Bounds fit clip observe margin={1.2}>
+          <Bounds fit clip margin={1.2}>
             <Model url={modelUrl} onSizeUpdate={setModelSize} />
           </Bounds>
         )}
