@@ -463,6 +463,67 @@ model-viewer {
 }
 
 /* ==========================================================================
+   MATERIALES Y PASTILLAS DE COLOR
+   ========================================================================== */
+.material-item {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 6px;
+  padding: 8px;
+  margin-bottom: 8px;
+}
+
+.material-item:last-child {
+  margin-bottom: 0;
+}
+
+.material-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+  font-weight: 500;
+  color: #e5e7eb;
+}
+
+.color-swatch {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  display: inline-block;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.5) inset;
+}
+
+.material-stats {
+  display: flex;
+  gap: 12px;
+  font-size: 11px;
+  color: #9ca3af;
+}
+
+.clear-selection-btn {
+  width: 100%;
+  background: rgba(239, 68, 68, 0.1);
+  color: #fca5a5;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  padding: 6px;
+  border-radius: 6px;
+  font-size: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+  margin-bottom: 12px;
+}
+
+.clear-selection-btn:hover {
+  background: rgba(239, 68, 68, 0.2);
+}
+
+/* ==========================================================================
    ANIMACIONES
    ========================================================================== */
 button {

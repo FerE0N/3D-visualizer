@@ -6,6 +6,22 @@ import { ToastData, ToastType } from '../components/Toast';
 export type AppTab = 'viewer' | 'library';
 export type Perspective = 'front' | 'top' | 'left' | 'right' | 'iso';
 
+export interface MaterialData {
+  name: string;
+  colorHex: string;
+  roughness: number;
+  metalness: number;
+}
+
+export interface MeshMetadata {
+  name: string;
+  vertices: number;
+  triangles: number;
+  position: { x: number, y: number, z: number };
+  scale: { x: number, y: number, z: number };
+  materials: MaterialData[];
+}
+
 export interface ModelMetadata {
   vertices: number;
   triangles: number;
@@ -18,6 +34,7 @@ export function useVisorController() {
   const [modelUrl, setModelUrl] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [isDragOver, setIsDragOver] = useState(false);
+  const [selectedMesh, setSelectedMesh] = useState<MeshMetadata | null>(null);
   const [toasts, setToasts] = useState<ToastData[]>([]);
   const [libraryItems, setLibraryItems] = useState<any[]>([]);
   const [currentPerspective, setCurrentPerspective] = useState<{view: string, id: number}>({view: 'iso', id: Date.now()});
@@ -138,6 +155,7 @@ export function useVisorController() {
     currentTab,
     fileInputRef,
     modelMetadata,
+    selectedMesh,
 
     // Acciones
     setIsDragOver,
@@ -152,6 +170,7 @@ export function useVisorController() {
     setShowGrid,
     toggleAutoRotate,
     toggleStudioLight,
-    setModelMetadata
+    setModelMetadata,
+    setSelectedMesh
   };
 }

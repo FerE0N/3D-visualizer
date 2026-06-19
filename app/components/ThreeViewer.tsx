@@ -5,9 +5,11 @@ import { Canvas, useThree } from '@react-three/fiber';
 import { OrbitControls, Grid, GizmoHelper, GizmoViewport, Environment, useGLTF, Center, Bounds } from '@react-three/drei';
 import * as THREE from 'three';
 
-function Model({ url, onSizeUpdate, onMetadataUpdate }: { url: string, onSizeUpdate: (size: number) => void, onMetadataUpdate?: (metadata: any) => void }) {
+function Model({ url, onSizeUpdate, onMetadataUpdate, onMeshSelect }: { url: string, onSizeUpdate: (size: number) => void, onMetadataUpdate?: (metadata: any) => void, onMeshSelect?: (meshData: any | null) => void }) {
   const { scene } = useGLTF(url);
-  
+  const [selectedNode, setSelectedNode] = useState<THREE.Object3D | null>(null);
+  const boxHelperRef = useRef<THREE.BoxHelper | null>(null);
+
   useEffect(() => {
     if (scene) {
       const box = new THREE.Box3().setFromObject(scene);
@@ -35,7 +37,7 @@ function Model({ url, onSizeUpdate, onMetadataUpdate }: { url: string, onSizeUpd
           }
           if (child.material) {
             if (Array.isArray(child.material)) {
-              child.material.forEach(m => materials.add(m.uuid));
+              child.material.forEach((m: any) => materials.add(m.uuid));
             } else {
               materials.add(child.material.uuid);
             }
@@ -73,8 +75,68 @@ function Model({ url, onSizeUpdate, onMetadataUpdate }: { url: string, onSizeUpd
     }
   }, [scene, onSizeUpdate, onMetadataUpdate]);
 
-  // Clonar opcional, pero useGLTF gestiona caché automáticamente
-  return <primitive object={scene} />;
+  // Actualizar el HelperBox cuando cambia el nodo
+  useEffect(() => {
+    if (selectedNode) {
+      if (!boxHelperRef.current) {
+        boxHelperRef.current = new THREE.BoxHelper(selectedNode, 0xffaa00);
+      } else {
+        boxHelperRef.current.setFromObject(selectedNode);
+      }
+    } else {
+      boxHelperRef.current = null;
+    }
+  }, [selectedNode]);
+
+  const extractMaterialData = (mat: any) => {
+    if (!mat) return [];
+    const matArray = Array.isArray(mat) ? mat : [mat];
+    return matArray.map(m => ({
+      name: m.name || 'Material',
+      colorHex: m.color ? '#' + m.color.getHexString() : '#ffffff',
+      roughness: m.roughness !== undefined ? m.roughness : 0.5,
+      metalness: m.metalness !== undefined ? m.metalness : 0.0
+    }));
+  };
+
+  const handlePointerDown = (e: any) => {
+    e.stopPropagation();
+    const mesh = e.object;
+    setSelectedNode(mesh);
+
+    if (onMeshSelect) {
+      const vertices = mesh.geometry?.attributes?.position?.count || 0;
+      const triangles = mesh.geometry?.index ? mesh.geometry.index.count / 3 : vertices / 3;
+      
+      const pos = new THREE.Vector3();
+      const scale = new THREE.Vector3();
+      mesh.getWorldPosition(pos);
+      mesh.getWorldScale(scale);
+
+      onMeshSelect({
+        name: mesh.name || 'Objeto',
+        vertices,
+        triangles: Math.floor(triangles),
+        position: { x: pos.x, y: pos.y, z: pos.z },
+        scale: { x: scale.x, y: scale.y, z: scale.z },
+        materials: extractMaterialData(mesh.material)
+      });
+    }
+  };
+
+  const handlePointerMissed = () => {
+    setSelectedNode(null);
+    if (onMeshSelect) onMeshSelect(null);
+  };
+
+  return (
+    <group onPointerMissed={handlePointerMissed}>
+      <primitive object={scene} onClick={handlePointerDown} />
+      {selectedNode && boxHelperRef.current && (
+        <primitive object={boxHelperRef.current} />
+      )}
+    </group>
+  );
 }
 
 // Wrapper para los controles que responde a la perspectiva
@@ -142,9 +204,10 @@ interface ThreeViewerProps {
   perspective: {view: string, id: number};
   studioLight: boolean;
   onMetadataUpdate?: (metadata: any) => void;
+  onMeshSelect?: (meshData: any | null) => void;
 }
 
-export default function ThreeViewer({ modelUrl, autoRotate, showGrid, perspective, studioLight, onMetadataUpdate }: ThreeViewerProps) {
+export default function ThreeViewer({ modelUrl, autoRotate, showGrid, perspective, studioLight, onMetadataUpdate, onMeshSelect }: ThreeViewerProps) {
   const [modelSize, setModelSize] = useState<number>(10);
 
   // Escala dinámica de la malla basada en el tamaño del modelo
@@ -174,7 +237,7 @@ export default function ThreeViewer({ modelUrl, autoRotate, showGrid, perspectiv
         {/* Modelo 3D posicionado dinámicamente sobre la malla y Cámara ajustada al tamaño */}
         {modelUrl && (
           <Bounds fit clip margin={1.2}>
-            <Model url={modelUrl} onSizeUpdate={setModelSize} onMetadataUpdate={onMetadataUpdate} />
+            <Model url={modelUrl} onSizeUpdate={setModelSize} onMetadataUpdate={onMetadataUpdate} onMeshSelect={onMeshSelect} />
           </Bounds>
         )}
 

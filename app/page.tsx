@@ -182,57 +182,128 @@ export default function Home() {
                         <line x1="12" y1="16" x2="12" y2="12"></line>
                         <line x1="12" y1="8" x2="12.01" y2="8"></line>
                       </svg>
-                      Propiedades del Modelo
+                      {ctrl.selectedMesh ? 'Propiedades de Malla' : 'Propiedades Globales'}
                     </div>
 
-                    <div className="property-group">
-                      <h3>
-                        Transform
+                    {ctrl.selectedMesh && (
+                      <button className="clear-selection-btn" onClick={() => ctrl.setSelectedMesh(null)}>
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                          <polyline points="21 8 21 21 3 21 3 8"></polyline>
-                          <rect x="1" y="3" width="22" height="5"></rect>
-                          <line x1="10" y1="12" x2="14" y2="12"></line>
+                          <line x1="18" y1="6" x2="6" y2="18"></line>
+                          <line x1="6" y1="6" x2="18" y2="18"></line>
                         </svg>
-                      </h3>
-                      <div className="property-row">
-                        <span className="property-label">Dimensión X</span>
-                        <span className="property-value">{ctrl.modelMetadata.dimensions.x.toFixed(2)}m</span>
-                      </div>
-                      <div className="property-row">
-                        <span className="property-label">Dimensión Y</span>
-                        <span className="property-value">{ctrl.modelMetadata.dimensions.y.toFixed(2)}m</span>
-                      </div>
-                      <div className="property-row">
-                        <span className="property-label">Dimensión Z</span>
-                        <span className="property-value">{ctrl.modelMetadata.dimensions.z.toFixed(2)}m</span>
-                      </div>
-                    </div>
+                        Limpiar Selección
+                      </button>
+                    )}
 
-                    <div className="property-group">
-                      <h3>
-                        Statistics
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                          <path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path>
-                          <path d="M22 12A10 10 0 0 0 12 2v10z"></path>
-                        </svg>
-                      </h3>
-                      <div className="property-row">
-                        <span className="property-label">Vértices</span>
-                        <span className="property-value">{ctrl.modelMetadata.vertices.toLocaleString()}</span>
-                      </div>
-                      <div className="property-row">
-                        <span className="property-label">Caras / Tris</span>
-                        <span className="property-value">{ctrl.modelMetadata.triangles.toLocaleString()}</span>
-                      </div>
-                      <div className="property-row">
-                        <span className="property-label">Mallas (Meshes)</span>
-                        <span className="property-value">{ctrl.modelMetadata.meshes}</span>
-                      </div>
-                      <div className="property-row">
-                        <span className="property-label">Materiales</span>
-                        <span className="property-value">{ctrl.modelMetadata.materials}</span>
-                      </div>
-                    </div>
+                    {ctrl.selectedMesh ? (
+                      /* VISTA DE OBJETO SELECCIONADO */
+                      <>
+                        <div className="property-group">
+                          <h3>
+                            Item: {ctrl.selectedMesh.name}
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                              <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                            </svg>
+                          </h3>
+                          <div className="property-row">
+                            <span className="property-label">Posición X</span>
+                            <span className="property-value">{ctrl.selectedMesh.position.x.toFixed(2)}</span>
+                          </div>
+                          <div className="property-row">
+                            <span className="property-label">Posición Y</span>
+                            <span className="property-value">{ctrl.selectedMesh.position.y.toFixed(2)}</span>
+                          </div>
+                          <div className="property-row">
+                            <span className="property-label">Posición Z</span>
+                            <span className="property-value">{ctrl.selectedMesh.position.z.toFixed(2)}</span>
+                          </div>
+                          <hr style={{borderColor: 'var(--glass-border)', margin: '8px 0'}} />
+                          <div className="property-row">
+                            <span className="property-label">Escala XYZ</span>
+                            <span className="property-value">{ctrl.selectedMesh.scale.x.toFixed(2)}</span>
+                          </div>
+                          <div className="property-row">
+                            <span className="property-label">Vértices</span>
+                            <span className="property-value">{ctrl.selectedMesh.vertices.toLocaleString()}</span>
+                          </div>
+                        </div>
+
+                        <div className="property-group">
+                          <h3>
+                            Materials ({ctrl.selectedMesh.materials.length})
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                              <circle cx="12" cy="12" r="10"></circle>
+                              <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path>
+                              <path d="M2 12h20"></path>
+                            </svg>
+                          </h3>
+                          {ctrl.selectedMesh.materials.map((mat: any, idx: number) => (
+                            <div key={idx} className="material-item">
+                              <div className="material-header">
+                                <span className="color-swatch" style={{ backgroundColor: mat.colorHex }}></span>
+                                {mat.name}
+                              </div>
+                              <div className="material-stats">
+                                <span>Rough: {mat.roughness.toFixed(2)}</span>
+                                <span>Metal: {mat.metalness.toFixed(2)}</span>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </>
+                    ) : (
+                      /* VISTA GLOBAL */
+                      <>
+                        <div className="property-group">
+                          <h3>
+                            Transform
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                              <polyline points="21 8 21 21 3 21 3 8"></polyline>
+                              <rect x="1" y="3" width="22" height="5"></rect>
+                              <line x1="10" y1="12" x2="14" y2="12"></line>
+                            </svg>
+                          </h3>
+                          <div className="property-row">
+                            <span className="property-label">Dimensión X</span>
+                            <span className="property-value">{ctrl.modelMetadata.dimensions.x.toFixed(2)}m</span>
+                          </div>
+                          <div className="property-row">
+                            <span className="property-label">Dimensión Y</span>
+                            <span className="property-value">{ctrl.modelMetadata.dimensions.y.toFixed(2)}m</span>
+                          </div>
+                          <div className="property-row">
+                            <span className="property-label">Dimensión Z</span>
+                            <span className="property-value">{ctrl.modelMetadata.dimensions.z.toFixed(2)}m</span>
+                          </div>
+                        </div>
+
+                        <div className="property-group">
+                          <h3>
+                            Statistics
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                              <path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path>
+                              <path d="M22 12A10 10 0 0 0 12 2v10z"></path>
+                            </svg>
+                          </h3>
+                          <div className="property-row">
+                            <span className="property-label">Vértices</span>
+                            <span className="property-value">{ctrl.modelMetadata.vertices.toLocaleString()}</span>
+                          </div>
+                          <div className="property-row">
+                            <span className="property-label">Caras / Tris</span>
+                            <span className="property-value">{ctrl.modelMetadata.triangles.toLocaleString()}</span>
+                          </div>
+                          <div className="property-row">
+                            <span className="property-label">Mallas (Meshes)</span>
+                            <span className="property-value">{ctrl.modelMetadata.meshes}</span>
+                          </div>
+                          <div className="property-row">
+                            <span className="property-label">Materiales</span>
+                            <span className="property-value">{ctrl.modelMetadata.materials}</span>
+                          </div>
+                        </div>
+                      </>
+                    )}
                   </div>
                 )}
               </div>
