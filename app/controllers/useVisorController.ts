@@ -46,8 +46,21 @@ export function useVisorController() {
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Cargar librería al inicio
+  // Cargar librería y leer URL al inicio
   useEffect(() => {
+    // 1. Verificar si hay un modelo en la URL compartida
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const modelQuery = params.get('model');
+      if (modelQuery) {
+        // Inicializar el visor directo con este modelo
+        setModelUrl(modelQuery);
+        // Opcional: mostrar un Toast de éxito
+        setTimeout(() => showToast(`Cargando modelo compartido...`, 'info'), 500);
+      }
+    }
+
+    // 2. Cargar Biblioteca
     LibraryModel.fetchLibrary().then(items => setLibraryItems(items.reverse()));
   }, []);
 

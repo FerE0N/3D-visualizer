@@ -1,6 +1,7 @@
 "use client";
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { QRCodeSVG } from 'qrcode.react';
 import { useVisorController } from './controllers/useVisorController';
 import ToastContainer from './components/Toast';
 import ThreeViewer from './components/ThreeViewer';
@@ -16,6 +17,92 @@ declare module 'react' {
 
 export default function Home() {
   const ctrl = useVisorController();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isQRModalOpen, setIsQRModalOpen] = useState(false);
+  const [currentUrl, setCurrentUrl] = useState('');
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setCurrentUrl(window.location.origin);
+    }
+  }, []);
+
+  const getQRLink = () => {
+    return `${currentUrl}/?model=${encodeURIComponent(ctrl.modelUrl || '')}`;
+  };
+
+  const getFileName = () => {
+    if (!ctrl.modelUrl) return '';
+    const parts = ctrl.modelUrl.split('/');
+    return parts[parts.length - 1] || 'Modelo 3D';
+  };
+
+  const renderTools = () => (
+    <>
+      <button className="tool-btn" onClick={() => ctrl.setPerspective('front')} title="Frente">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+        </svg>
+        <span>Frente</span>
+      </button>
+      <button className="tool-btn" onClick={() => ctrl.setPerspective('top')} title="Arriba">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="12" y1="3" x2="12" y2="21"></line>
+        </svg>
+        <span>Arriba</span>
+      </button>
+      <button className="tool-btn" onClick={() => ctrl.setPerspective('iso')} title="Isométrico">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+          <polyline points="2 17 12 22 22 17"></polyline>
+          <polyline points="2 12 12 17 22 12"></polyline>
+        </svg>
+        <span>Iso</span>
+      </button>
+      <hr className="tools-divider" style={{borderColor: 'var(--glass-border)', margin: '4px 0'}} />
+      <button className={`tool-btn ${ctrl.autoRotate ? 'active' : ''}`} onClick={ctrl.toggleAutoRotate} title="Giro Automático">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+          <path d="M3 3v5h5"></path>
+        </svg>
+        <span>Giro</span>
+      </button>
+      <button className={`tool-btn ${ctrl.showGrid ? 'active' : ''}`} onClick={ctrl.toggleGrid} title="Mostrar/Ocultar Malla">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="M3 3h18v18H3z"></path>
+          <path d="M3 9h18"></path>
+          <path d="M3 15h18"></path>
+          <path d="M9 3v18"></path>
+          <path d="M15 3v18"></path>
+        </svg>
+        <span>Malla</span>
+      </button>
+      <button className={`tool-btn ${ctrl.studioLight ? 'active' : ''}`} onClick={ctrl.toggleStudioLight} title="Alternar Luz">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <circle cx="12" cy="12" r="5"></circle>
+          <line x1="12" y1="1" x2="12" y2="3"></line>
+          <line x1="12" y1="21" x2="12" y2="23"></line>
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+          <line x1="1" y1="12" x2="3" y2="12"></line>
+          <line x1="21" y1="12" x2="23" y2="12"></line>
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
+        <span>Luz</span>
+      </button>
+      <hr className="tools-divider" style={{borderColor: 'var(--glass-border)', margin: '4px 0'}} />
+      <button className="tool-btn danger" onClick={ctrl.closeViewer} title="Cerrar Visor">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+        <span>Cerrar</span>
+      </button>
+    </>
+  );
 
   return (
     <div className="app-container">
@@ -104,63 +191,18 @@ export default function Home() {
               <div className="viewer-layout">
                 {/* ÁREA DEL VISOR (IZQUIERDA) */}
                 <div className="viewer-main">
-                  {/* PANEL DE HERRAMIENTAS FLOTANTE */}
-                  <div className="tools-panel">
-                    <button className="tool-btn" onClick={() => ctrl.setPerspective('front')} title="Frente">
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                        <line x1="3" y1="12" x2="21" y2="12"></line>
-                      </svg>
-                    </button>
-                    <button className="tool-btn" onClick={() => ctrl.setPerspective('top')} title="Arriba">
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                        <line x1="12" y1="3" x2="12" y2="21"></line>
-                      </svg>
-                    </button>
-                    <button className="tool-btn" onClick={() => ctrl.setPerspective('iso')} title="Isométrico">
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
-                        <polyline points="2 17 12 22 22 17"></polyline>
-                        <polyline points="2 12 12 17 22 12"></polyline>
-                      </svg>
-                    </button>
-                    <hr style={{borderColor: 'var(--glass-border)', margin: '4px 0'}} />
-                    <button className={`tool-btn ${ctrl.autoRotate ? 'active' : ''}`} onClick={ctrl.toggleAutoRotate} title="Giro Automático">
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
-                        <path d="M3 3v5h5"></path>
-                      </svg>
-                    </button>
-                    <button className={`tool-btn ${ctrl.showGrid ? 'active' : ''}`} onClick={ctrl.toggleGrid} title="Mostrar/Ocultar Malla">
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <path d="M3 3h18v18H3z"></path>
-                        <path d="M3 9h18"></path>
-                        <path d="M3 15h18"></path>
-                        <path d="M9 3v18"></path>
-                        <path d="M15 3v18"></path>
-                      </svg>
-                    </button>
-                    <button className={`tool-btn ${ctrl.studioLight ? 'active' : ''}`} onClick={ctrl.toggleStudioLight} title="Alternar entre Luz del Visor y Luz Nativas">
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <circle cx="12" cy="12" r="5"></circle>
-                        <line x1="12" y1="1" x2="12" y2="3"></line>
-                        <line x1="12" y1="21" x2="12" y2="23"></line>
-                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-                        <line x1="1" y1="12" x2="3" y2="12"></line>
-                        <line x1="21" y1="12" x2="23" y2="12"></line>
-                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-                      </svg>
-                    </button>
-                    <hr style={{borderColor: 'var(--glass-border)', margin: '4px 0'}} />
-                    <button className="tool-btn danger" onClick={ctrl.closeViewer} title="Cerrar Visor">
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <line x1="18" y1="6" x2="6" y2="18"></line>
-                        <line x1="6" y1="6" x2="18" y2="18"></line>
-                      </svg>
-                    </button>
+                  {/* HAMBURGER MENU BUTTON (Visible solo en móvil) */}
+                  <button className="mobile-menu-btn" onClick={() => setIsMobileMenuOpen(true)}>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <line x1="3" y1="12" x2="21" y2="12"></line>
+                      <line x1="3" y1="6" x2="21" y2="6"></line>
+                      <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                  </button>
+
+                  {/* PANEL DE HERRAMIENTAS FLOTANTE (Oculto en móvil) */}
+                  <div className="tools-panel desktop-only">
+                    {renderTools()}
                   </div>
 
                   <ThreeViewer 
@@ -325,6 +367,76 @@ export default function Home() {
                     )}
                   </div>
                 )}
+              </div>
+            )}
+            
+            {/* FLOATING QR BUTTON (Desktop) */}
+            {ctrl.modelUrl && (
+              <button className="floating-qr-btn desktop-only" onClick={() => setIsQRModalOpen(true)} title="Compartir con QR">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <rect x="3" y="3" width="7" height="7" rx="1" ry="1"></rect>
+                  <rect x="14" y="3" width="7" height="7" rx="1" ry="1"></rect>
+                  <rect x="14" y="14" width="7" height="7" rx="1" ry="1"></rect>
+                  <rect x="3" y="14" width="7" height="7" rx="1" ry="1"></rect>
+                  <line x1="9" y1="9" x2="9.01" y2="9"></line>
+                  <line x1="15" y1="9" x2="15.01" y2="9"></line>
+                  <line x1="15" y1="15" x2="15.01" y2="15"></line>
+                  <line x1="9" y1="15" x2="9.01" y2="15"></line>
+                </svg>
+              </button>
+            )}
+
+            {/* MOBILE SIDEBAR */}
+            <div className={`mobile-sidebar ${isMobileMenuOpen ? 'open' : ''}`}>
+              <div className="sidebar-overlay" onClick={() => setIsMobileMenuOpen(false)}></div>
+              <div className="sidebar-content">
+                <div className="sidebar-header">
+                  <h3>Herramientas</h3>
+                  <button className="close-sidebar-btn" onClick={() => setIsMobileMenuOpen(false)}>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <line x1="18" y1="6" x2="6" y2="18"></line>
+                      <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                  </button>
+                </div>
+                <div className="sidebar-tools">
+                  {renderTools()}
+                  <hr style={{borderColor: 'var(--glass-border)', margin: '8px 0'}} />
+                  <button className="tool-btn qr-sidebar-btn" onClick={() => {
+                      setIsMobileMenuOpen(false);
+                      setIsQRModalOpen(true);
+                  }}>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <rect x="3" y="3" width="7" height="7" rx="1" ry="1"></rect>
+                      <rect x="14" y="3" width="7" height="7" rx="1" ry="1"></rect>
+                      <rect x="14" y="14" width="7" height="7" rx="1" ry="1"></rect>
+                      <rect x="3" y="14" width="7" height="7" rx="1" ry="1"></rect>
+                    </svg>
+                    <span>Mostrar Código QR</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* QR MODAL POPUP */}
+            {isQRModalOpen && (
+              <div className="qr-modal-overlay" onClick={() => setIsQRModalOpen(false)}>
+                <div className="qr-modal-content glass-panel" onClick={(e) => e.stopPropagation()}>
+                  <button className="close-modal-btn" onClick={() => setIsQRModalOpen(false)}>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <line x1="18" y1="6" x2="6" y2="18"></line>
+                      <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                  </button>
+                  <div className="qr-wrapper">
+                    <h3>Compartir Modelo</h3>
+                    <p className="qr-filename">{getFileName()}</p>
+                    <div className="qr-code-box">
+                      <QRCodeSVG value={getQRLink()} size={200} bgColor="#ffffff" fgColor="#000000" level="H" />
+                    </div>
+                    <p className="qr-hint">Escanea este código con tu celular para abrir este mismo modelo 3D al instante.</p>
+                  </div>
+                </div>
               </div>
             )}
           </>
