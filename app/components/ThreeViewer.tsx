@@ -1,12 +1,12 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, Suspense } from 'react';
 import { Canvas, useThree } from '@react-three/fiber';
-import { OrbitControls, Grid, GizmoHelper, GizmoViewport, Environment, useGLTF, Center, Bounds } from '@react-three/drei';
+import { OrbitControls, Grid, GizmoHelper, GizmoViewport, Environment, useGLTF, Center, Bounds, Html } from '@react-three/drei';
 import * as THREE from 'three';
 
 function Model({ url, onSizeUpdate, onMetadataUpdate, onMeshSelect }: { url: string, onSizeUpdate: (size: number) => void, onMetadataUpdate?: (metadata: any) => void, onMeshSelect?: (meshData: any | null) => void }) {
-  const { scene } = useGLTF(url);
+  const { scene } = useGLTF(url, true); // true habilita DRACO loader
   const [selectedNode, setSelectedNode] = useState<THREE.Object3D | null>(null);
   const boxHelperRef = useRef<THREE.BoxHelper | null>(null);
 
@@ -249,9 +249,11 @@ export default function ThreeViewer({ modelUrl, autoRotate, showGrid, perspectiv
 
         {/* Modelo 3D posicionado dinámicamente sobre la malla y Cámara ajustada al tamaño */}
         {modelUrl && (
-          <Bounds fit clip margin={1.2}>
-            <Model url={modelUrl} onSizeUpdate={setModelSize} onMetadataUpdate={onMetadataUpdate} onMeshSelect={onMeshSelect} />
-          </Bounds>
+          <Suspense fallback={<Html center><div style={{color: 'white', background: 'rgba(0,0,0,0.5)', padding: '10px 20px', borderRadius: '8px', whiteSpace: 'nowrap'}}>Cargando modelo...</div></Html>}>
+            <Bounds fit clip margin={1.2}>
+              <Model url={modelUrl} onSizeUpdate={setModelSize} onMetadataUpdate={onMetadataUpdate} onMeshSelect={onMeshSelect} />
+            </Bounds>
+          </Suspense>
         )}
 
         {/* Malla 3D en el piso (Estilo Blender) - Adaptable a escala */}
