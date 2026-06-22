@@ -268,13 +268,12 @@ body {
     background: transparent;
     border: 1px solid transparent;
     color: var(--text-secondary);
-    padding: 0.5rem 1rem;
+    padding: 0.5rem;
     border-radius: 50px;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     display: flex;
     align-items: center;
-    gap: 0.5rem;
     font-size: 0.85rem;
     font-weight: 600;
 }
@@ -282,12 +281,23 @@ body {
 .tool-btn svg {
     width: 18px;
     height: 18px;
+    flex-shrink: 0;
+}
+
+.tool-btn span {
+    max-width: 0;
+    opacity: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    transition: max-width 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease, margin-left 0.3s ease;
+    margin-left: 0;
 }
 
 .tool-btn:hover {
     background: rgba(255, 255, 255, 0.1);
     color: var(--text-primary);
     border-color: rgba(255, 255, 255, 0.2);
+    padding: 0.5rem 1rem;
 }
 
 .tool-btn.active {
@@ -295,6 +305,12 @@ body {
     color: #60a5fa;
     border-color: rgba(59, 130, 246, 0.4);
     box-shadow: 0 0 12px rgba(59, 130, 246, 0.15);
+}
+
+.tool-btn:hover span, .tool-btn.active span {
+    max-width: 120px;
+    opacity: 1;
+    margin-left: 0.5rem;
 }
 
 model-viewer {
@@ -824,6 +840,9 @@ button {
 
 .sidebar-tools .tool-btn span {
     display: inline;
+    max-width: none;
+    opacity: 1;
+    margin-left: 0.5rem;
 }
 
 .qr-sidebar-btn {
