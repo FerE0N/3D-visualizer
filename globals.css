@@ -285,6 +285,7 @@ body {
 }
 
 .tool-btn span {
+    display: inline-block;
     max-width: 0;
     opacity: 0;
     overflow: hidden;
@@ -307,7 +308,11 @@ body {
     box-shadow: 0 0 12px rgba(59, 130, 246, 0.15);
 }
 
-.tool-btn:hover span, .tool-btn.active span {
+.tool-btn:hover.active {
+    padding: 0.5rem 1rem;
+}
+
+.tool-btn:hover span {
     max-width: 120px;
     opacity: 1;
     margin-left: 0.5rem;
