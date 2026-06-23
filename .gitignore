@@ -3,7 +3,5 @@ dist
 .env
 .DS_Store
 .next/
-data/library.json
-public/models/*
 !public/models/.gitkeep
 FLUJO_CARGA_CASA_CHIDISIMA.md
