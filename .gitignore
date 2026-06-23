@@ -6,3 +6,4 @@ dist
 data/library.json
 public/models/*
 !public/models/.gitkeep
+FLUJO_CARGA_CASA_CHIDISIMA.md
